@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MusicClub"
 include(":app")
- 
+include(":innertube")
