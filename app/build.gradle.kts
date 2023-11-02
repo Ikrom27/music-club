@@ -64,6 +64,10 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     //Navigate
     implementation("androidx.navigation:navigation-compose:2.7.4")
+    //Material
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
