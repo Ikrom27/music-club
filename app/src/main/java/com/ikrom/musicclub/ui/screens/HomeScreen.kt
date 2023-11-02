@@ -1,7 +1,8 @@
 package com.ikrom.musicclub.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,10 +20,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.ui.components.ApplicationTopBar
 import com.ikrom.musicclub.ui.components.NewReleaseRow
 import com.ikrom.musicclub.ui.components.TrackRow
-import com.ikrom.musicclub.ui.theme.mainHorizontalPadding
+import com.ikrom.musicclub.ui.theme.BETWEEN_ROW_ITEMS_SPACE
+import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.HomeViewModel
 
 
@@ -50,12 +53,16 @@ fun HomeScreen(
                     text = "From Linkin Park",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(mainHorizontalPadding, 16.dp)
+                    modifier = Modifier.padding(MAIN_HORIZONTAL_PADDING, 16.dp)
                 )
-                LazyRow {
+                LazyRow(
+                    contentPadding = PaddingValues(start = MAIN_HORIZONTAL_PADDING, end = MAIN_HORIZONTAL_PADDING),
+                    horizontalArrangement = Arrangement.spacedBy(BETWEEN_ROW_ITEMS_SPACE)
+                ) {
                     items(items = trackList){track->
                         TrackRow(
                             title = track.title,
+                            author = track.album.artists.getNames(),
                             cover = track.album.cover,
                             onItemClick = { /*TODO*/},
                             onLongClick = { /*TODO*/ }
@@ -68,12 +75,16 @@ fun HomeScreen(
                     text = "New Release",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(mainHorizontalPadding, 16.dp)
+                    modifier = Modifier.padding(MAIN_HORIZONTAL_PADDING, 16.dp)
                 )
-                LazyRow {
+                LazyRow(
+                    contentPadding = PaddingValues(start = MAIN_HORIZONTAL_PADDING, end = MAIN_HORIZONTAL_PADDING),
+                    horizontalArrangement = Arrangement.spacedBy(BETWEEN_ROW_ITEMS_SPACE)
+                ) {
                     items(items = albumList){album->
                         NewReleaseRow(
                             title = album.title,
+                            author = album.artists.getNames(),
                             cover = album.cover,
                             onItemClick = { /*TODO*/},
                             onLongClick = { /*TODO*/ }

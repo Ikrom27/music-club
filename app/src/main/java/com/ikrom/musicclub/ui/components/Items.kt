@@ -12,28 +12,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.ikrom.musicclub.ui.theme.MusicClubTheme
-import com.ikrom.musicclub.ui.theme.TRACK_ROW_IMAGE
+import com.ikrom.musicclub.ui.theme.ALBUM_LARGE_COVER_SIZE
 
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun TrackRow(
     title: String,
+    author: String,
     cover: String,
     onItemClick: () -> Unit,
     onLongClick: () -> Unit,
 ){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier.combinedClickable(
             onClick = onItemClick,
             onLongClick = onLongClick
@@ -43,23 +43,40 @@ fun TrackRow(
             model = cover,
             contentDescription = null,
             modifier = Modifier
-                .size(TRACK_ROW_IMAGE, TRACK_ROW_IMAGE)
+                .size(ALBUM_LARGE_COVER_SIZE, ALBUM_LARGE_COVER_SIZE)
                 .clip(MaterialTheme.shapes.small)
         )
         Text(
             text = title,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
+            textAlign = TextAlign.Left,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             lineHeight = 22.sp,
             modifier = Modifier
                 .requiredWidthIn(
-                    max = 115.dp
+                    max = ALBUM_LARGE_COVER_SIZE
                 )
                 .padding(
                     top = 8.dp
+                )
+        )
+        Text(
+            text = author,
+            color = Color.Gray,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Left,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            lineHeight = 22.sp,
+            modifier = Modifier
+                .requiredWidthIn(
+                    max = ALBUM_LARGE_COVER_SIZE
+                )
+                .padding(
+                    top = 4.dp
                 )
         )
     }
@@ -69,12 +86,13 @@ fun TrackRow(
 @Composable
 fun NewReleaseRow(
     title: String,
+    author: String,
     cover: String,
     onItemClick: () -> Unit,
     onLongClick: () -> Unit,
 ){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier.combinedClickable(
             onClick = onItemClick,
             onLongClick = onLongClick
@@ -84,38 +102,41 @@ fun NewReleaseRow(
             model = cover,
             contentDescription = null,
             modifier = Modifier
-                .size(TRACK_ROW_IMAGE, TRACK_ROW_IMAGE)
+                .size(ALBUM_LARGE_COVER_SIZE, ALBUM_LARGE_COVER_SIZE)
                 .clip(MaterialTheme.shapes.small)
         )
         Text(
             text = title,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
+            textAlign = TextAlign.Left,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             lineHeight = 22.sp,
             modifier = Modifier
                 .requiredWidthIn(
-                    max = 115.dp
+                    max = ALBUM_LARGE_COVER_SIZE
                 )
                 .padding(
                     top = 8.dp
                 )
         )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    MusicClubTheme {
-        TrackRow(
-            "Stressed out",
-            "https://upload.wikimedia.org/wikipedia/ru/thumb/9/9d/Blurryface.jpeg/274px-Blurryface.jpeg",
-            onItemClick = {},
-            onLongClick = {}
+        Text(
+            text = author,
+            color = Color.Gray,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Left,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            lineHeight = 22.sp,
+            modifier = Modifier
+                .requiredWidthIn(
+                    max = ALBUM_LARGE_COVER_SIZE
+                )
+                .padding(
+                    top = 4.dp
+                )
         )
     }
 }
