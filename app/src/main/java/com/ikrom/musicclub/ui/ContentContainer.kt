@@ -9,11 +9,13 @@ import com.ikrom.musicclub.ui.screens.ExploreScreen
 import com.ikrom.musicclub.ui.screens.HomeScreen
 import com.ikrom.musicclub.ui.screens.LibraryScreen
 import com.ikrom.musicclub.view_model.HomeViewModel
+import com.ikrom.musicclub.view_model.PlayerViewModel
 
 
 @Composable
 fun ContentContainer(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
     NavHost(
@@ -22,7 +24,8 @@ fun ContentContainer(
     {
         composable("home"){
             HomeScreen(
-                homeViewModel
+                homeViewModel = homeViewModel,
+                playerViewModel = playerViewModel
             )
         }
         composable("explore"){

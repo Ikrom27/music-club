@@ -21,19 +21,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ikrom.musicclub.extensions.getNames
+import com.ikrom.musicclub.extensions.toMediaItem
 import com.ikrom.musicclub.ui.components.ApplicationTopBar
 import com.ikrom.musicclub.ui.components.NewReleaseRow
 import com.ikrom.musicclub.ui.components.TrackRow
 import com.ikrom.musicclub.ui.theme.BETWEEN_ROW_ITEMS_SPACE
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.HomeViewModel
+import com.ikrom.musicclub.view_model.PlayerViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    playerViewModel: PlayerViewModel
 ) {
     val trackList by homeViewModel.getTracksByQuery("Linkin park").collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -64,7 +67,7 @@ fun HomeScreen(
                             title = track.title,
                             author = track.album.artists.getNames(),
                             cover = track.album.cover,
-                            onItemClick = { /*TODO*/},
+                            onItemClick = { playerViewModel.playNext(track.toMediaItem())},
                             onLongClick = { /*TODO*/ }
                         )
                     }
