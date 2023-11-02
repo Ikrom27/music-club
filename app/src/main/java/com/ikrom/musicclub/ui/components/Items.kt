@@ -65,6 +65,47 @@ fun TrackRow(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
+@Composable
+fun NewReleaseRow(
+    title: String,
+    cover: String,
+    onItemClick: () -> Unit,
+    onLongClick: () -> Unit,
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.combinedClickable(
+            onClick = onItemClick,
+            onLongClick = onLongClick
+        )
+    ) {
+        GlideImage(
+            model = cover,
+            contentDescription = null,
+            modifier = Modifier
+                .size(TRACK_ROW_IMAGE, TRACK_ROW_IMAGE)
+                .clip(MaterialTheme.shapes.small)
+        )
+        Text(
+            text = title,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            lineHeight = 22.sp,
+            modifier = Modifier
+                .requiredWidthIn(
+                    max = 115.dp
+                )
+                .padding(
+                    top = 8.dp
+                )
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
