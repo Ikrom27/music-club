@@ -34,4 +34,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val intent = Intent(this, MusicPlayerService::class.java)
+        stopService(intent)
+    }
 }

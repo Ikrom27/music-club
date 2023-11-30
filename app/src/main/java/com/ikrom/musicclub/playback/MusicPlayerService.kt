@@ -52,6 +52,7 @@ class MusicPlayerService: MediaSessionService() {
             release()
             destroyPlayer()
         }
+        notificationManager.stopForeground(this)
         super.onDestroy()
     }
 

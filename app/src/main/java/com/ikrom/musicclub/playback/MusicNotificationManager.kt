@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -77,6 +78,10 @@ class MusicNotificationManager @Inject constructor (
                 it.setUseNextActionInCompactView(true)
                 it.setPlayer(player)
             }
+    }
+
+    public fun stopForeground(mediaSessionService: MediaSessionService){
+        mediaSessionService.stopForeground(Service.STOP_FOREGROUND_REMOVE)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
