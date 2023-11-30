@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MusicClub</string>
+    <string name="app_name">Music club</string>
     <string name="screen_home">Home</string>
     <string name="screen_explore">Explore</string>
     <string name="screen_library">Library</string>
