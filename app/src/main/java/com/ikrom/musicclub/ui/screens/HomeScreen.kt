@@ -72,7 +72,6 @@ fun HomeScreen(
                             cover = track.album.cover,
                             onItemClick = {
                                 playerViewModel.playNext(track.toMediaItem())
-                                navController.navigate("player")
                                           },
                             onLongClick = { /*TODO*/ }
                         )

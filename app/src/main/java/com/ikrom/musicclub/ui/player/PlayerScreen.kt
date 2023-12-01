@@ -1,7 +1,6 @@
-package com.ikrom.musicclub.ui.screens
+package com.ikrom.musicclub.ui.player
 
 import android.annotation.SuppressLint
-import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -37,13 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat.performHapticFeedback
 import androidx.media3.common.C
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -64,7 +61,7 @@ fun PlayerScreen(
     playerViewModel: PlayerViewModel
 ){
     val haptic = LocalHapticFeedback.current
-    val currentTrack by playerViewModel.getCurrentMediaItem().collectAsState()
+    val currentTrack by remember { playerViewModel.getCurrentMediaItem() }
     val isPlaying by playerViewModel.isPlaying.collectAsState()
     val playbackState by playerViewModel.playbackState.collectAsState()
 

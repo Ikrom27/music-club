@@ -1,6 +1,7 @@
 package com.ikrom.musicclub.view_model
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class PlayerViewModel @Inject constructor(
     val player: ExoPlayer
 ): ViewModel() {
-    private var currentMediaItem = MutableStateFlow(player.currentMediaItem)
+    private var currentMediaItem = mutableStateOf(player.currentMediaItem)
     val playbackState = MutableStateFlow(player.playbackState)
     val isPlaying = MutableStateFlow(player.playWhenReady)
     var currentPosition = mutableLongStateOf(0L)
@@ -69,7 +70,7 @@ class PlayerViewModel @Inject constructor(
         player.prepare()
     }
 
-    fun getCurrentMediaItem(): StateFlow<MediaItem?> {
+    fun getCurrentMediaItem(): MutableState<MediaItem?> {
         return currentMediaItem
     }
 }
