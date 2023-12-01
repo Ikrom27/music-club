@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.ikrom.musicclub.ui.screens.ExploreScreen
 import com.ikrom.musicclub.ui.screens.HomeScreen
 import com.ikrom.musicclub.ui.screens.LibraryScreen
+import com.ikrom.musicclub.ui.screens.PlayerScreen
 import com.ikrom.musicclub.view_model.HomeViewModel
 import com.ikrom.musicclub.view_model.PlayerViewModel
 
@@ -24,6 +25,7 @@ fun ContentContainer(
     {
         composable("home"){
             HomeScreen(
+                navController = navController,
                 homeViewModel = homeViewModel,
                 playerViewModel = playerViewModel
             )
@@ -33,6 +35,9 @@ fun ContentContainer(
         }
         composable("library"){
             LibraryScreen()
+        }
+        composable("player"){
+            PlayerScreen(navController = navController, playerViewModel = playerViewModel)
         }
     }
 }

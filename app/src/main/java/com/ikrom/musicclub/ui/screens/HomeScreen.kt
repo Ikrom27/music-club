@@ -20,6 +20,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.toMediaItem
 import com.ikrom.musicclub.ui.components.ApplicationTopBar
@@ -35,6 +36,7 @@ import com.ikrom.musicclub.view_model.PlayerViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavHostController,
     homeViewModel: HomeViewModel,
     playerViewModel: PlayerViewModel
 ) {
@@ -67,7 +69,10 @@ fun HomeScreen(
                             title = track.title,
                             author = track.album.artists.getNames(),
                             cover = track.album.cover,
-                            onItemClick = { playerViewModel.playNext(track.toMediaItem())},
+                            onItemClick = {
+                                playerViewModel.playNext(track.toMediaItem())
+                                navController.navigate("player")
+                                          },
                             onLongClick = { /*TODO*/ }
                         )
                     }
