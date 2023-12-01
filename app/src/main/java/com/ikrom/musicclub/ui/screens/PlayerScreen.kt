@@ -1,15 +1,23 @@
 package com.ikrom.musicclub.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
-import android.widget.SeekBar
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,24 +34,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.C
-import androidx.media3.common.Player
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
 import com.ikrom.musicclub.extensions.togglePlayPause
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
+import com.ikrom.musicclub.utils.makeTimeString
 import com.ikrom.musicclub.view_model.PlayerViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("UnrememberedMutableState")
@@ -83,15 +87,16 @@ fun PlayerScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Icon(painter = painterResource(R.drawable.ic_array_down), contentDescription = "")
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(R.drawable.ic_more_horizontal), contentDescription = "")
-            }
+            Box(
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(6.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+            )
         }
 
         GlideImage(
@@ -100,7 +105,7 @@ fun PlayerScreen(
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.small)
+                .clip(MaterialTheme.shapes.large)
         )
         Row(
             modifier = Modifier
@@ -123,21 +128,23 @@ fun PlayerScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             Column {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_favorite_border),
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .clickable {
+
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_more_horizontal),
                         contentDescription = "",
-                        modifier = Modifier.size(64.dp)
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }
         }
-        Text(
-            text = makeTimeString(sliderPosition ?: currentPosition),
-            style = MaterialTheme.typography.labelMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
         Slider(
             value = (sliderPosition ?: currentPosition).toFloat(),
             valueRange = 0f..(if (totalDuration == C.TIME_UNSET) 0f else totalDuration.toFloat()),
@@ -150,8 +157,25 @@ fun PlayerScreen(
                     currentPosition = it
                 }
                 sliderPosition = null
-            }
+            },
+            modifier = Modifier.padding(top = 24.dp)
         )
+
+        Row{
+            Text(
+                text = makeTimeString(sliderPosition ?: currentPosition),
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = makeTimeString(totalDuration),
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
 
         TrackControls(
             modifier = Modifier.padding(top = 24.dp),
@@ -171,10 +195,28 @@ fun TrackControls(
     onNextClick: () -> Unit,
     onPreviousClick: () -> Unit
 ) {
+    var cornerSize by remember { mutableStateOf(100.dp) }
+    val cornerSizeAnimatable = remember { Animatable(cornerSize.value) }
+
+    LaunchedEffect(isPlaying) {
+        cornerSizeAnimatable.animateTo(
+            targetValue = if (isPlaying) 100f else 20f,
+            animationSpec = tween(150)
+        )
+    }
+
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        IconButton(onClick = {  }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_favorite_border),
+                contentDescription = "",
+                modifier = Modifier.size(32.dp)
+            )
+        }
         IconButton(
             onClick = { onPreviousClick() },
             modifier = Modifier.padding(16.dp)
@@ -186,14 +228,22 @@ fun TrackControls(
             )
         }
 
-        IconButton(
-            onClick = { onPlayPause() },
-            modifier = Modifier.padding(16.dp)
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(RoundedCornerShape(cornerSizeAnimatable.value.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .clickable {
+                    onPlayPause()
+                }
         ) {
-            Icon(
+            Image(
                 painter = painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
-                contentDescription = if (isPlaying) "Pause" else "Play",
-                modifier = Modifier.size(70.dp)
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(36.dp)
             )
         }
 
@@ -207,21 +257,12 @@ fun TrackControls(
                 modifier = Modifier.size(70.dp)
             )
         }
-    }
-}
-
-fun makeTimeString(duration: Long?): String {
-    if (duration == null || duration < 0) return ""
-    var sec = duration / 1000
-    val day = sec / 86400
-    sec %= 86400
-    val hour = sec / 3600
-    sec %= 3600
-    val minute = sec / 60
-    sec %= 60
-    return when {
-        day > 0 -> "%d:%02d:%02d:%02d".format(day, hour, minute, sec)
-        hour > 0 -> "%d:%02d:%02d".format(hour, minute, sec)
-        else -> "%d:%02d".format(minute, sec)
+        IconButton(onClick = {  }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_repeat),
+                contentDescription = "",
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 }

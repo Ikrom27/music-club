@@ -3,7 +3,7 @@ package com.ikrom.musicclub.ui.theme
 import androidx.compose.ui.unit.dp
 
 
-val MAIN_HORIZONTAL_PADDING = 16.dp
+val MAIN_HORIZONTAL_PADDING = 20.dp
 val BETWEEN_ROW_ITEMS_SPACE = 16.dp
 val noMargin = 0.dp
 
