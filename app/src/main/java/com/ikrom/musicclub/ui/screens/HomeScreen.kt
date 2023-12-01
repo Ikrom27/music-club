@@ -15,6 +15,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
@@ -40,9 +41,9 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     playerViewModel: PlayerViewModel
 ) {
-    val trackList by homeViewModel.getTracksByQuery("Linkin park").collectAsState()
+    val trackList by remember { homeViewModel.getTracksByQuery("Linkin park") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val albumList by homeViewModel.getNewRelease().collectAsState()
+    val albumList by remember {  homeViewModel.getNewRelease() }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

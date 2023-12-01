@@ -1,5 +1,6 @@
 package com.ikrom.musicclub.data.repository
 
+import androidx.compose.runtime.MutableState
 import com.ikrom.musicclub.data.data_source.IMusicServiceDataSource
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
@@ -9,15 +10,15 @@ import javax.inject.Inject
 class MusicServiceRepository @Inject constructor(
     private val youtubeService: IMusicServiceDataSource
 ) {
-    fun getTracksByQuery(query: String): StateFlow<List<Track>>{
+    fun getTracksByQuery(query: String): MutableState<List<Track>> {
         return youtubeService.getTracksByQuery(query)
     }
 
-    fun getNewReleases(): StateFlow<List<Album>> {
+    fun getNewReleases(): MutableState<List<Album>> {
         return youtubeService.getNewReleaseAlbums()
     }
 
-    fun getAlbumTracks(albumId: String): StateFlow<List<Track>> {
+    fun getAlbumTracks(albumId: String): MutableState<List<Track>> {
         return youtubeService.getAlbumTracks(albumId)
     }
 }
