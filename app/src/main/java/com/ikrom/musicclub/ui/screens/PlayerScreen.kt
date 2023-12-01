@@ -1,6 +1,7 @@
 package com.ikrom.musicclub.ui.screens
 
 import android.annotation.SuppressLint
+import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -35,10 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.ViewCompat.performHapticFeedback
 import androidx.media3.common.C
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -58,6 +63,7 @@ fun PlayerScreen(
     navController: NavHostController,
     playerViewModel: PlayerViewModel
 ){
+    val haptic = LocalHapticFeedback.current
     val currentTrack by playerViewModel.getCurrentMediaItem().collectAsState()
     val isPlaying by playerViewModel.isPlaying.collectAsState()
     val playbackState by playerViewModel.playbackState.collectAsState()
@@ -71,6 +77,10 @@ fun PlayerScreen(
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
+
+    val coverPadding by remember { mutableStateOf(0f) }
+    val coverSizeAnimatable = remember { Animatable(coverPadding) }
+
     if (isPlaying) {
         LaunchedEffect(Unit) {
             while(true) {
@@ -78,6 +88,13 @@ fun PlayerScreen(
                 delay(1.seconds / 15)
             }
         }
+    }
+
+    LaunchedEffect(isPlaying) {
+        coverSizeAnimatable.animateTo(
+            targetValue = if (isPlaying) 0f else 40f,
+            animationSpec = tween(150)
+        )
     }
 
     Column(
@@ -98,15 +115,17 @@ fun PlayerScreen(
                     .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
             )
         }
-
-        GlideImage(
-            model = currentTrack!!.mediaMetadata.artworkUri,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(top = 24.dp)
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.large)
-        )
+        Box(modifier = Modifier
+            .padding(top = 24.dp)
+            .fillMaxWidth()){
+            GlideImage(
+                model = currentTrack!!.mediaMetadata.artworkUri,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(coverSizeAnimatable.value.dp)
+                    .clip(MaterialTheme.shapes.large)
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -180,7 +199,10 @@ fun PlayerScreen(
         TrackControls(
             modifier = Modifier.padding(top = 24.dp),
             isPlaying = isPlaying,
-            onPlayPause = {playerViewModel.player.togglePlayPause()},
+            onPlayPause = {
+                playerViewModel.player.togglePlayPause()
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                          },
             onNextClick = {playerViewModel.player.seekToNext()},
             onPreviousClick = {playerViewModel.player.seekToPrevious()}
         )
