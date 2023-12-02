@@ -15,7 +15,7 @@ class MusicServiceRepository @Inject constructor(
         return youtubeService.getTracksByQuery(query)
     }
 
-    fun getNewReleases(): MutableState<List<Album>> {
+    fun getNewReleases(): MutableStateFlow<List<Album>> {
         return youtubeService.getNewReleaseAlbums()
     }
 

@@ -42,9 +42,10 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     playerViewModel: PlayerViewModel
 ) {
-    val trackList by homeViewModel.getTracksByQuery("Linkin park").collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val albumList by remember {  homeViewModel.getNewRelease() }
+
+    val trackList by homeViewModel.queryList.collectAsState()
+    val albumList by homeViewModel.releaseList.collectAsState()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

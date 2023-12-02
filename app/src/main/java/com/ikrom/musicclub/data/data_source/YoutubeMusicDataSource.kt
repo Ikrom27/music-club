@@ -31,8 +31,8 @@ class YoutubeMusicDataSource: IMusicServiceDataSource {
         return tracksStateFlow
     }
 
-    override fun getNewReleaseAlbums(): MutableState<List<Album>> {
-        val responseStateFlow = mutableStateOf<List<Album>>(ArrayList())
+    override fun getNewReleaseAlbums(): MutableStateFlow<List<Album>> {
+        val responseStateFlow = MutableStateFlow<List<Album>>(ArrayList())
         CoroutineScope(Dispatchers.IO).launch {
             YouTube.newReleaseAlbums().onSuccess { result ->
                 responseStateFlow.value = result.map{ it.toAlbum() }
