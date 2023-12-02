@@ -18,11 +18,12 @@ import kotlinx.coroutines.launch
 
 class YoutubeMusicDataSource: IMusicServiceDataSource {
     private val TAG = "YoutubeMusicDataSource"
-    override fun getTracksByQuery(query: String): MutableState<List<Track>> {
-        val tracksStateFlow = mutableStateOf<List<Track>>(ArrayList())
+    override fun getTracksByQuery(query: String): MutableStateFlow<List<Track>> {
+        val tracksStateFlow = MutableStateFlow<List<Track>>(ArrayList())
         CoroutineScope(Dispatchers.IO).launch {
             YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).onSuccess { result ->
                 tracksStateFlow.value = result.items.map { (it as SongItem).toTrack()}
+                Log.d("YoutubeMusicDataSource", "Find results: ${tracksStateFlow.value.size}")
             }.onFailure {
                 Log.e(TAG, "onFailure error: $it")
             }

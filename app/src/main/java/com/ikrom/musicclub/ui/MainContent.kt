@@ -38,7 +38,8 @@ fun MainContent(
         }
     ){
         ContentContainer(
-            navController = navController
+            navController = navController,
+            playerViewModel = playerViewModel
         )
     }
 }

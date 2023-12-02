@@ -6,6 +6,7 @@ import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.repository.MusicServiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: MusicServiceRepository
 ): ViewModel() {
-    fun getTracksByQuery(query: String): MutableState<List<Track>> {
+    fun getTracksByQuery(query: String): MutableStateFlow<List<Track>> {
         return repository.getTracksByQuery(query)
     }
 

@@ -31,15 +31,15 @@ import com.ikrom.musicclub.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreBar(
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    userInput: String,
+    onQueryChange: (String) -> Unit,
     onSearchClick: (String) -> Unit
 ) {
-    var userInput by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
     SearchBar(
         query = userInput,
         onQueryChange = {
-            userInput = it
+            onQueryChange(it)
         },
         onSearch = {
             isActive = false

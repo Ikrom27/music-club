@@ -31,6 +31,7 @@ import com.ikrom.musicclub.ui.theme.BETWEEN_ROW_ITEMS_SPACE
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.HomeViewModel
 import com.ikrom.musicclub.view_model.PlayerViewModel
+import kotlinx.coroutines.flow.asStateFlow
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -41,7 +42,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     playerViewModel: PlayerViewModel
 ) {
-    val trackList by remember { homeViewModel.getTracksByQuery("Linkin park") }
+    val trackList by homeViewModel.getTracksByQuery("Linkin park").collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val albumList by remember {  homeViewModel.getNewRelease() }
 
