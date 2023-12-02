@@ -1,17 +1,23 @@
 package com.ikrom.musicclub.view_model
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.offline.DownloadRequest
+import androidx.media3.exoplayer.offline.DownloadService
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.repository.MusicServiceRepository
 import com.ikrom.musicclub.extensions.toMediaItem
+import com.ikrom.musicclub.playback.ExoDownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,12 +55,21 @@ class PlayerViewModel @Inject constructor(
             }
         })
     }
-
-    fun addToFavorite(){
+    @UnstableApi
+    fun addToFavorite(context: Context){
         viewModelScope.launch {
             currentTrack?.let {
+                val downloadRequest = DownloadRequest.Builder(it.videoId, it.videoId.toUri())
+                    .setCustomCacheKey(it.videoId)
+                    .setData(it.title.toByteArray())
+                    .build()
+                DownloadService.sendAddDownload(
+                    context,
+                    ExoDownloadService::class.java,
+                    downloadRequest,
+                    false
+                )
                 repository.addToFavorite(it)
-                Log.d("PLAyer", it.title)
             }
         }
     }

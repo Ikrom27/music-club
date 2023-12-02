@@ -34,12 +34,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -47,10 +49,10 @@ import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
-import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
+import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.togglePlayPause
 import com.ikrom.musicclub.playback.ExoDownloadService
@@ -61,17 +63,16 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalGlideComposeApi::class)
 @UnstableApi
 @Composable
 fun PlayerScreen(
     playerViewModel: PlayerViewModel
 ){
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
     val currentTrack by remember { mutableStateOf(playerViewModel.currentTrack) }
     val isPlaying by playerViewModel.isPlaying.collectAsState()
     val playbackState by playerViewModel.playbackState.collectAsState()
-    val context = LocalContext.current
     val totalDuration by rememberSaveable(playbackState) {
         playerViewModel.totalDuration
     }
@@ -82,9 +83,6 @@ fun PlayerScreen(
         mutableStateOf<Long?>(null)
     }
 
-    val coverPadding by remember { mutableStateOf(0f) }
-    val coverSizeAnimatable = remember { Animatable(coverPadding) }
-
     if (isPlaying) {
         LaunchedEffect(Unit) {
             while(true) {
@@ -94,98 +92,39 @@ fun PlayerScreen(
         }
     }
 
-    LaunchedEffect(isPlaying) {
-        coverSizeAnimatable.animateTo(
-            targetValue = if (isPlaying) 0f else 40f,
-            animationSpec = tween(150)
-        )
-    }
-
     Column(
-        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING)
+        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier
             .padding(top = 24.dp)
-            .fillMaxWidth()){
-            GlideImage(
-                model = currentTrack?.album?.cover,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(coverSizeAnimatable.value.dp)
-                    .clip(MaterialTheme.shapes.large)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Column {
-                Text(
-                    text = if (currentTrack == null) "---" else currentTrack!!.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontSize = 24.sp
-                )
-                Text(
-                    text = if (currentTrack == null) "---" else currentTrack!!.album.artists.getNames(),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 18.sp
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Column {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .clickable {
+            .width(70.dp).height(5.dp)
+            .clip(MaterialTheme.shapes.extraLarge)
+            .background(Color.Gray.copy(alpha = 0.3f))
+        )
 
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_more_horizontal),
-                        contentDescription = "",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
-        }
-        Slider(
-            value = (sliderPosition ?: currentPosition).toFloat(),
-            valueRange = 0f..(if (totalDuration == C.TIME_UNSET) 0f else totalDuration.toFloat()),
-            onValueChange = {
-                sliderPosition = it.toLong()
-            },
-            onValueChangeFinished = {
+        TrackInfo(
+            track = currentTrack,
+            isPlaying = isPlaying,
+            onButtonClick = {}
+        )
+
+        ProgressBar(
+            sliderPosition = sliderPosition,
+            currentPosition = currentPosition,
+            totalDuration = totalDuration,
+            onSeek = { sliderPosition = it.toLong() },
+            onSeekChanged = {
                 sliderPosition?.let {
                     playerViewModel.player.seekTo(it)
                     currentPosition = it
                 }
                 sliderPosition = null
-            },
-            modifier = Modifier.padding(top = 24.dp)
+            }
         )
 
-        Row{
-            Text(
-                text = makeTimeString(sliderPosition ?: currentPosition),
-                style = MaterialTheme.typography.labelMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = makeTimeString(totalDuration),
-                style = MaterialTheme.typography.labelMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
 
-        TrackControls(
+        PlayerControlButtons(
             modifier = Modifier.padding(top = 24.dp),
             isPlaying = isPlaying,
             onPlayPause = {
@@ -193,28 +132,117 @@ fun PlayerScreen(
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                           },
             onNextClick = {playerViewModel.player.seekToNext()},
-            toFavoriteClick = {
-                currentTrack?.let{track ->
-                    playerViewModel.addToFavorite()
-                    val downloadRequest = DownloadRequest.Builder(track.videoId, track.videoId.toUri())
-                        .setCustomCacheKey(track.videoId)
-                        .setData(track.title.toByteArray())
-                        .build()
-                    DownloadService.sendAddDownload(
-                        context,
-                        ExoDownloadService::class.java,
-                        downloadRequest,
-                        false
-                    )
-                }
-                              },
+            toFavoriteClick = { playerViewModel.addToFavorite(context) },
             onPreviousClick = {playerViewModel.player.seekToPrevious()}
         )
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TrackControls(
+fun TrackInfo(
+    track: Track?,
+    isPlaying: Boolean,
+    onButtonClick: () -> Unit
+){
+    val coverPadding by remember { mutableStateOf(0f) }
+    val coverSizeAnimatable = remember { Animatable(coverPadding) }
+
+    LaunchedEffect(isPlaying) {
+        coverSizeAnimatable.animateTo(
+            targetValue = if (isPlaying) 0f else 40f,
+            animationSpec = tween(150)
+        )
+    }
+
+    Box(modifier = Modifier
+        .padding(top = 24.dp)
+        .fillMaxWidth()){
+        GlideImage(
+            model = track?.album?.cover ?: R.drawable.ic_track_cover,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(coverSizeAnimatable.value.dp)
+                .clip(MaterialTheme.shapes.large)
+        )
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Column {
+            Text(
+                text = track?.title ?: "---",
+                style = MaterialTheme.typography.titleMedium,
+                fontSize = 24.sp
+            )
+            Text(
+                text = track?.album?.artists?.getNames() ?: "---",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 18.sp
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Column {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .clickable {
+                        onButtonClick()
+                    }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_more_horizontal),
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProgressBar(
+    sliderPosition: Long?,
+    currentPosition: Long,
+    totalDuration: Long,
+    onSeek: (Float) -> Unit,
+    onSeekChanged: () -> Unit
+){
+    Slider(
+        value = (sliderPosition ?: currentPosition).toFloat(),
+        valueRange = 0f..(if (totalDuration == C.TIME_UNSET) 0f else totalDuration.toFloat()),
+        onValueChange = {
+            onSeek(it)
+        },
+        onValueChangeFinished = { onSeekChanged() },
+        modifier = Modifier.padding(top = 24.dp)
+    )
+
+    Row{
+        Text(
+            text = makeTimeString(sliderPosition ?: currentPosition),
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = makeTimeString(totalDuration),
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+fun PlayerControlButtons(
     modifier: Modifier,
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
@@ -222,7 +250,7 @@ fun TrackControls(
     toFavoriteClick: () -> Unit,
     onPreviousClick: () -> Unit
 ) {
-    var cornerSize by remember { mutableStateOf(100.dp) }
+    val cornerSize by remember { mutableStateOf(100.dp) }
     val cornerSizeAnimatable = remember { Animatable(cornerSize.value) }
 
     LaunchedEffect(isPlaying) {
