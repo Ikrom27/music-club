@@ -77,7 +77,7 @@ class AppModule {
         @DownloadCacheScope
         downloadCache: SimpleCache,
         @PlayerCacheScope
-        playerCache: SimpleCache
+        playerCache: SimpleCache,
     ) : DefaultMediaSourceFactory
             = MediaSourceFactory(downloadCache, playerCache).createMediaSourceFactory(context)
 

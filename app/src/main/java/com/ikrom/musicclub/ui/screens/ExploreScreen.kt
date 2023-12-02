@@ -55,7 +55,7 @@ fun ExploreScreen(
                 TrackColumnItem(
                     track = it,
                     onItemClick = {
-                        playerViewModel.playNow(it.toMediaItem())
+                        playerViewModel.playNow(it)
                     },
                     onButtonClick = {}
                 )

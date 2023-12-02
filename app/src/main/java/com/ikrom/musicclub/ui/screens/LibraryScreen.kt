@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.ikrom.musicclub.extensions.toMediaItem
 import com.ikrom.musicclub.ui.components.TrackColumnItem
 import com.ikrom.musicclub.view_model.LibraryViewModel
 import com.ikrom.musicclub.view_model.PlayerViewModel
@@ -25,7 +24,7 @@ fun LibraryScreen(
             TrackColumnItem(
                 track = it,
                 onItemClick = {
-                    playerViewModel.playNow(it.toMediaItem())
+                    playerViewModel.playNow(it)
                 },
                 onButtonClick = { /*TODO*/ })
         }

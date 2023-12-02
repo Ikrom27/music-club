@@ -11,6 +11,9 @@ interface AppDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: TrackEntity)
 
+    @Query("SELECT * FROM tracks WHERE videoId = :videoId")
+    suspend fun getTrackById(videoId: String): TrackEntity
+
     @Query("SELECT * FROM tracks")
     suspend fun getAllTracks(): List<TrackEntity>
 }

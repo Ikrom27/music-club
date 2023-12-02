@@ -32,3 +32,12 @@ fun Track.toMediaItem(): MediaItem {
         )
         .build()
 }
+
+fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
+    for (i in currentMediaItemIndex until mediaItemCount) {
+        if (getMediaItemAt(i).mediaId == mediaId) {
+            return getMediaItemAt(i)
+        }
+    }
+    return null
+}

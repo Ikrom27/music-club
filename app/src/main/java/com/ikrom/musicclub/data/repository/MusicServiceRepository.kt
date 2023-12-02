@@ -6,6 +6,7 @@ import com.ikrom.musicclub.data.data_source.LocalDataSource
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.model.TrackEntity
+import com.ikrom.musicclub.extensions.toTrackEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -28,5 +29,9 @@ class MusicServiceRepository @Inject constructor(
 
     suspend fun getFavoriteTracks(): MutableStateFlow<List<Track>>{
         return localDataSource.getAllTracks()
+    }
+
+    suspend fun addToFavorite(track: Track){
+        localDataSource.insertTrack(track.toTrackEntity())
     }
 }

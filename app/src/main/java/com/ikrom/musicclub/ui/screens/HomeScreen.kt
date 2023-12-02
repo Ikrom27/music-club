@@ -73,7 +73,7 @@ fun HomeScreen(
                             author = track.album.artists.getNames(),
                             cover = track.album.cover,
                             onItemClick = {
-                                playerViewModel.playNext(track.toMediaItem())
+                                playerViewModel.playNow(track)
                                           },
                             onLongClick = { /*TODO*/ }
                         )

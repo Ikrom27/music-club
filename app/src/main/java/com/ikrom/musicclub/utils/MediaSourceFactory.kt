@@ -11,26 +11,34 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.ExtractorsFactory
 import androidx.media3.extractor.mkv.MatroskaExtractor
 import androidx.media3.extractor.mp4.FragmentedMp4Extractor
 import com.ikrom.innertube.YouTube
+import com.ikrom.innertube.models.response.PlayerResponse
+import com.ikrom.musicclub.data.room.AppDataBase
 import com.ikrom.musicclub.di.DownloadCacheScope
 import com.ikrom.musicclub.di.PlayerCacheScope
+import com.ikrom.musicclub.extensions.findNextMediaItemById
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
 @OptIn(UnstableApi::class)
-class MediaSourceFactory(
+class MediaSourceFactory @Inject constructor(
     @DownloadCacheScope
     val downloadCache: SimpleCache,
     @PlayerCacheScope
-    var playerCache: SimpleCache
+    var playerCache: SimpleCache,
 ) {
     private val CHUNK_LENGTH = 512 * 1024L
 
@@ -64,8 +72,19 @@ class MediaSourceFactory(
 
 
     private fun createDataSourceFactory(context: Context): DataSource.Factory {
+        val songUrlCache = HashMap<String, Pair<String, Long>>()
         return ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
+            val length = if (dataSpec.length >= 0) dataSpec.length else 1
+
+            if (downloadCache.isCached(mediaId, dataSpec.position, length) || playerCache.isCached(mediaId, dataSpec.position, length)) {
+                return@Factory dataSpec
+            }
+
+            songUrlCache[mediaId]?.takeIf { it.second < System.currentTimeMillis() }?.let {
+                return@Factory dataSpec.withUri(it.first.toUri())
+            }
+
             val playerResponse = runBlocking(Dispatchers.IO) {
                 YouTube.player(mediaId)
             }.getOrElse { throwable ->

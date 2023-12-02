@@ -36,17 +36,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.media3.common.C
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.offline.DownloadRequest
+import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
+import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.togglePlayPause
+import com.ikrom.musicclub.playback.ExoDownloadService
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.utils.makeTimeString
 import com.ikrom.musicclub.view_model.PlayerViewModel
@@ -55,16 +62,17 @@ import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalGlideComposeApi::class)
+@UnstableApi
 @Composable
 fun PlayerScreen(
     navController: NavHostController,
     playerViewModel: PlayerViewModel
 ){
     val haptic = LocalHapticFeedback.current
-    val currentTrack by remember { playerViewModel.getCurrentMediaItem() }
+    val currentTrack by remember { mutableStateOf(playerViewModel.currentTrack) }
     val isPlaying by playerViewModel.isPlaying.collectAsState()
     val playbackState by playerViewModel.playbackState.collectAsState()
-
+    val context = LocalContext.current
     val totalDuration by rememberSaveable(playbackState) {
         playerViewModel.totalDuration
     }
@@ -116,7 +124,7 @@ fun PlayerScreen(
             .padding(top = 24.dp)
             .fillMaxWidth()){
             GlideImage(
-                model = currentTrack!!.mediaMetadata.artworkUri,
+                model = currentTrack?.album?.cover,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(coverSizeAnimatable.value.dp)
@@ -131,12 +139,12 @@ fun PlayerScreen(
         ){
             Column {
                 Text(
-                    text = currentTrack!!.mediaMetadata.title.toString(),
+                    text = if (currentTrack == null) "---" else currentTrack!!.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 24.sp
                 )
                 Text(
-                    text = currentTrack!!.mediaMetadata.artist.toString(),
+                    text = if (currentTrack == null) "---" else currentTrack!!.album.artists.getNames(),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 18.sp
@@ -201,6 +209,21 @@ fun PlayerScreen(
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                           },
             onNextClick = {playerViewModel.player.seekToNext()},
+            toFavoriteClick = {
+                currentTrack?.let{track ->
+                    playerViewModel.addToFavorite()
+                    val downloadRequest = DownloadRequest.Builder(track.videoId, track.videoId.toUri())
+                        .setCustomCacheKey(track.videoId)
+                        .setData(track.title.toByteArray())
+                        .build()
+                    DownloadService.sendAddDownload(
+                        context,
+                        ExoDownloadService::class.java,
+                        downloadRequest,
+                        false
+                    )
+                }
+                              },
             onPreviousClick = {playerViewModel.player.seekToPrevious()}
         )
     }
@@ -212,6 +235,7 @@ fun TrackControls(
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
     onNextClick: () -> Unit,
+    toFavoriteClick: () -> Unit,
     onPreviousClick: () -> Unit
 ) {
     var cornerSize by remember { mutableStateOf(100.dp) }
@@ -229,7 +253,7 @@ fun TrackControls(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = {  }) {
+        IconButton(onClick = { toFavoriteClick() }) {
             Icon(
                 painter = painterResource(R.drawable.ic_favorite_border),
                 contentDescription = "",

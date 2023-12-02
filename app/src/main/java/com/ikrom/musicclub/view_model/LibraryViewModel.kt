@@ -1,5 +1,6 @@
 package com.ikrom.musicclub.view_model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ikrom.musicclub.data.model.Track
@@ -22,7 +23,14 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getFavoriteTracks().collect{
                 _favoriteTracks.value = it
+                Log.d("LibraryViewModel", it.size.toString())
             }
+        }
+    }
+
+    fun addToFavorite(track: Track){
+        viewModelScope.launch {
+            repository.addToFavorite(track)
         }
     }
 }
