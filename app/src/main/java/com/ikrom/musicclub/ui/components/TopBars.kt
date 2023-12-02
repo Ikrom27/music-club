@@ -2,6 +2,7 @@ package com.ikrom.musicclub.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,8 +65,8 @@ fun ApplicationTopBar(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
+                    verticalAlignment = Alignment.CenterVertically
+                ){
                     Icon(
                         painter = painterResource(R.drawable.ic_vinyl),
                         modifier = Modifier.size(28.dp),
@@ -76,6 +77,13 @@ fun ApplicationTopBar(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(8.dp, 0.dp)
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_devices),
+                            contentDescription = "",
+                            modifier = Modifier.size(24.dp))
+                    }
                 }
             }
         },

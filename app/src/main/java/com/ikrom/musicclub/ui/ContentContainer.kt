@@ -33,7 +33,6 @@ fun ContentContainer(
     {
         composable("home"){
             HomeScreen(
-                navController = navController,
                 homeViewModel = homeViewModel,
                 playerViewModel = playerViewModel
             )

@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.asStateFlow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
     homeViewModel: HomeViewModel,
     playerViewModel: PlayerViewModel
 ) {
