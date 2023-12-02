@@ -125,7 +125,7 @@ fun PlayerScreen(
         )
 
         PlayerControlButtons(
-            modifier = Modifier.padding(top = 24.dp),
+            modifier = Modifier.padding(top = 42.dp),
             isPlaying = isPlaying,
             onPlayPause = {
                 playerViewModel.player.togglePlayPause()
@@ -142,7 +142,7 @@ fun PlayerScreen(
             {},
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 64.dp)
+                .padding(top = 52.dp)
         )
     }
 }

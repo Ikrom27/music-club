@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,8 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
@@ -33,7 +34,9 @@ import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
 import com.ikrom.musicclub.view_model.PlayerViewModel
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@UnstableApi
 @Composable
 fun MiniPlayer(
     playerViewModel: PlayerViewModel,
@@ -42,6 +45,7 @@ fun MiniPlayer(
 ) {
     val currentTrack by remember { playerViewModel.getCurrentMediaItem() }
     val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val context = LocalContext.current
 
     Box(
         modifier = modifier
@@ -54,29 +58,39 @@ fun MiniPlayer(
             modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            GlideImage(
-                model = if (currentTrack == null) R.drawable.ic_track_cover else currentTrack!!.mediaMetadata.artworkUri,
-                contentDescription = "---",
+            Box(
                 modifier = Modifier
-                    .width(MINI_PLAYER_HEIGHT - 8.dp)
-                    .clip(MaterialTheme.shapes.small),
-            )
+                    .size(MINI_PLAYER_HEIGHT - 8.dp)
+            ){
+                GlideImage(
+                    model = if (currentTrack == null) R.drawable.ic_track_cover else currentTrack!!.mediaMetadata.artworkUri,
+                    contentDescription = "---",
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.small),
+                )
+            }
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = currentTrack?.mediaMetadata?.title.toString()
+                    text = currentTrack?.mediaMetadata?.title.toString(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = currentTrack?.mediaMetadata?.artist.toString(),
-                    color = Color.Gray
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-            IconButton(onClick = {  }) {
+            IconButton(onClick = {
+                playerViewModel.addToFavorite(context)
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_favorite_border),
                     contentDescription = "",
