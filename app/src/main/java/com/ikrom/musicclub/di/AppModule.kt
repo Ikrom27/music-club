@@ -10,8 +10,10 @@ import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.ikrom.musicclub.data.data_source.IMusicServiceDataSource
+import com.ikrom.musicclub.data.data_source.LocalDataSource
 import com.ikrom.musicclub.data.data_source.YoutubeMusicDataSource
 import com.ikrom.musicclub.data.repository.MusicServiceRepository
+import com.ikrom.musicclub.data.room.AppDataBase
 import com.ikrom.musicclub.playback.MusicNotificationManager
 import com.ikrom.musicclub.utils.MediaSourceFactory
 import com.ikrom.musicclub.playback.MusicPlayerService
@@ -44,8 +46,15 @@ class AppModule {
     @Provides
     @Singleton
     fun provideMusicServiceRepository(
-        @YoutubeDataSource youtubeMusicDataSource: IMusicServiceDataSource
-    ): MusicServiceRepository = MusicServiceRepository(youtubeMusicDataSource)
+        @YoutubeDataSource youtubeMusicDataSource: IMusicServiceDataSource,
+        localDataSource: LocalDataSource
+    ): MusicServiceRepository = MusicServiceRepository(youtubeMusicDataSource, localDataSource)
+
+    @Provides
+    @Singleton
+    fun provideLocalDataSource(
+        dataBase: AppDataBase
+    ): LocalDataSource = LocalDataSource(dataBase)
 
     @Provides
     @Singleton
