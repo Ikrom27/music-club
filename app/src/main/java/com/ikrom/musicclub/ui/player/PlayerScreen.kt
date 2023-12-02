@@ -98,7 +98,8 @@ fun PlayerScreen(
     ) {
         Box(modifier = Modifier
             .padding(top = 24.dp)
-            .width(70.dp).height(5.dp)
+            .width(70.dp)
+            .height(5.dp)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(Color.Gray.copy(alpha = 0.3f))
         )
@@ -123,7 +124,6 @@ fun PlayerScreen(
             }
         )
 
-
         PlayerControlButtons(
             modifier = Modifier.padding(top = 24.dp),
             isPlaying = isPlaying,
@@ -134,6 +134,15 @@ fun PlayerScreen(
             onNextClick = {playerViewModel.player.seekToNext()},
             toFavoriteClick = { playerViewModel.addToFavorite(context) },
             onPreviousClick = {playerViewModel.player.seekToPrevious()}
+        )
+
+        AdditionalButtons(
+            {},
+            {},
+            {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 64.dp)
         )
     }
 }
@@ -318,6 +327,51 @@ fun PlayerControlButtons(
                 contentDescription = "",
                 modifier = Modifier.size(32.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun AdditionalButtons(
+    onCaptionsClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    onShowPlaylistClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    Box(modifier = modifier){
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            IconButton(onClick = {
+                onCaptionsClick()
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_captions),
+                    contentDescription = "",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(64.dp))
+            IconButton(onClick = {
+                onShuffleClick()
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_shuffle),
+                    contentDescription = "",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(64.dp))
+            IconButton(onClick = {
+                onShowPlaylistClick()
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_playlist),
+                    contentDescription = "",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
     }
 }
