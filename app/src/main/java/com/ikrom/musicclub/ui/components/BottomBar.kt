@@ -31,11 +31,12 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun BottomNavBar(
+fun BottomBar(
     navController: NavController,
     playerViewModel: PlayerViewModel,
     navBackStackEntry: NavBackStackEntry?,
-    navigationItems: List<Screens>
+    navigationItems: List<Screens>,
+    onPlayerClick: () -> Unit
 ){
     val showBottomBar = navBackStackEntry?.destination?.route in navigationItems.map { it.route }
     val verticalOffset by animateFloatAsState(
@@ -48,7 +49,7 @@ fun BottomNavBar(
     Column(modifier = Modifier.offset { IntOffset(x = 0, y = verticalOffset.roundToInt()) }) {
         MiniPlayer(
             playerViewModel = playerViewModel,
-            onClick = { navController.navigate("player") },
+            onClick = { onPlayerClick() },
             modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer))
         BottomAppBar{
             navigationItems.forEach { screen ->

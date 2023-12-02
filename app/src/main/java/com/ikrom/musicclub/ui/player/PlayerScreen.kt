@@ -65,7 +65,6 @@ import kotlin.time.Duration.Companion.seconds
 @UnstableApi
 @Composable
 fun PlayerScreen(
-    navController: NavHostController,
     playerViewModel: PlayerViewModel
 ){
     val haptic = LocalHapticFeedback.current
@@ -105,21 +104,6 @@ fun PlayerScreen(
     Column(
         modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(60.dp)
-                    .height(6.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
-            )
-        }
         Box(modifier = Modifier
             .padding(top = 24.dp)
             .fillMaxWidth()){
