@@ -25,7 +25,6 @@ import com.ikrom.musicclub.ui.player.PlayerScreen
 import com.ikrom.musicclub.view_model.PlayerViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @UnstableApi
 @Composable
@@ -35,7 +34,7 @@ fun MainContent(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navigationItems = remember {
-        listOf(Screens.Home, Screens.Explore, Screens.Library)
+        listOf(Screens.Home, Screens.Explore, Screens.Library, Screens.Profile)
     }
     var showPlayerSheet by remember { mutableStateOf(false) }
     BoxWithConstraints{

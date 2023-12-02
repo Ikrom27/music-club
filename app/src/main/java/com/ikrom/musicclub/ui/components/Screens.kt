@@ -12,4 +12,5 @@ sealed class Screens (
     object Home : Screens(R.string.screen_home, R.drawable.ic_home, "home")
     object Explore : Screens(R.string.screen_explore, R.drawable.ic_explore, "explore")
     object Library : Screens(R.string.screen_library, R.drawable.ic_library, "library")
+    object Profile : Screens(R.string.screen_library, R.drawable.ic_profile, "profile")
 }

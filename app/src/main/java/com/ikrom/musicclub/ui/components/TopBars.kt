@@ -77,19 +77,6 @@ fun ApplicationTopBar(
                         modifier = Modifier.padding(8.dp, 0.dp)
                     )
                 }
-                Row(
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                ) {
-                    IconButton(
-                        onClick = { /* Действие при нажатии на кнопку */ }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_profile),
-                            modifier = Modifier.size(18.dp),
-                            contentDescription = "")
-                    }
-
-                }
             }
         },
         scrollBehavior = scrollBehavior,
