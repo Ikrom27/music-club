@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -31,6 +33,7 @@ import kotlin.math.roundToInt
 
 
 @Composable
+@UnstableApi
 fun BottomBar(
     navController: NavController,
     playerViewModel: PlayerViewModel,
@@ -50,7 +53,8 @@ fun BottomBar(
         MiniPlayer(
             playerViewModel = playerViewModel,
             onClick = { onPlayerClick() },
-            modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer))
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+        )
         BottomAppBar{
             navigationItems.forEach { screen ->
                 val isSelected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
