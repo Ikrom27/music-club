@@ -82,7 +82,7 @@ fun MainContent(
                 onDismiss = {
                     showPlayerSheet = false
                     window.navigationBarColor = surfaceColor
-                }
+                },
             ){
                 PlayerScreen(playerViewModel = playerViewModel)
             }

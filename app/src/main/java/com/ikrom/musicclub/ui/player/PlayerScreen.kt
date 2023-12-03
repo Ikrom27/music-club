@@ -1,6 +1,7 @@
 package com.ikrom.musicclub.ui.player
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -94,7 +97,7 @@ fun PlayerScreen(
     }
 
     Column(
-        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
+        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)).fillMaxHeight().padding(horizontal = MAIN_HORIZONTAL_PADDING),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier
