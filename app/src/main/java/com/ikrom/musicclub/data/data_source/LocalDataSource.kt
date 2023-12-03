@@ -17,7 +17,15 @@ class LocalDataSource @Inject constructor(dataBase: AppDataBase) {
         trackDao.insertTrack(track)
     }
 
+    suspend fun isFavorite(id: String): Boolean{
+        return trackDao.countById(id) > 0
+    }
+
     suspend fun getAllTracks(): MutableStateFlow<List<Track>> {
         return MutableStateFlow(trackDao.getAllTracks().map {it.toTrack() })
+    }
+
+    suspend fun deleteTrackById(id: String){
+        trackDao.deleteTrackById(id)
     }
 }

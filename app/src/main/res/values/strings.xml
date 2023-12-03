@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Music club</string>
-    <string name="screen_home">Home</string>
-    <string name="screen_explore">Explore</string>
-    <string name="screen_library">Library</string>
-    <string name="download">Download</string>
+    <string name="screen_home">Главная</string>
+    <string name="screen_explore">Поиск</string>
+    <string name="screen_library">Библиотке</string>
+    <string name="screen_profile">Профиль</string>
+    <string name="download">Загрузка</string>
 
     <!-- Noun -->
     <plurals name="n_song">

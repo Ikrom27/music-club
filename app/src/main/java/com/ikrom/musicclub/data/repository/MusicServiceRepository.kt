@@ -34,4 +34,12 @@ class MusicServiceRepository @Inject constructor(
     suspend fun addToFavorite(track: Track){
         localDataSource.insertTrack(track.toTrackEntity())
     }
+
+    suspend fun isFavorite(id: String): Boolean{
+        return localDataSource.isFavorite(id)
+    }
+
+    suspend fun deleteTrackById(id: String){
+        localDataSource.deleteTrackById(id)
+    }
 }

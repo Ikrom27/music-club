@@ -14,6 +14,12 @@ interface AppDao {
     @Query("SELECT * FROM tracks WHERE videoId = :videoId")
     suspend fun getTrackById(videoId: String): TrackEntity
 
+    @Query("SELECT COUNT(*) FROM tracks WHERE videoId = :videoId")
+    suspend fun countById(videoId: String): Int
+
     @Query("SELECT * FROM tracks")
     suspend fun getAllTracks(): List<TrackEntity>
+
+    @Query("DELETE FROM tracks WHERE videoId = :videoId")
+    suspend fun deleteTrackById(videoId: String)
 }

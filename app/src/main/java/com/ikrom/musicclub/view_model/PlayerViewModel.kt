@@ -21,6 +21,7 @@ import com.ikrom.musicclub.playback.ExoDownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +36,8 @@ class PlayerViewModel @Inject constructor(
     val isPlaying = MutableStateFlow(player.playWhenReady)
     var currentPosition = mutableLongStateOf(0L)
     var totalDuration =  mutableLongStateOf(0L)
+
+    private val _isFavorite = MutableStateFlow(false)
 
     init {
         Log.d("PlayerViewModel", "FUUUCK")
@@ -57,8 +60,8 @@ class PlayerViewModel @Inject constructor(
     }
     @UnstableApi
     fun addToFavorite(context: Context){
-        viewModelScope.launch {
-            currentTrack?.let {
+        currentTrack?.let {
+            viewModelScope.launch {
                 val downloadRequest = DownloadRequest.Builder(it.videoId, it.videoId.toUri())
                     .setCustomCacheKey(it.videoId)
                     .setData(it.title.toByteArray())
@@ -72,6 +75,25 @@ class PlayerViewModel @Inject constructor(
                 repository.addToFavorite(it)
             }
         }
+    }
+
+    @UnstableApi
+    fun deleteFromFavorite(context: Context){
+        currentTrack?.let {
+            viewModelScope.launch {
+                DownloadService.sendRemoveDownload(
+                    context,
+                    ExoDownloadService::class.java,
+                    it.videoId,
+                    false
+                )
+                repository.deleteTrackById(it.videoId)
+            }
+        }
+    }
+    @UnstableApi
+    fun toggleFavorite(context: Context){
+        addToFavorite(context)
     }
 
     fun playNow(track: Track){
@@ -105,5 +127,14 @@ class PlayerViewModel @Inject constructor(
 
     fun getCurrentMediaItem(): MutableState<MediaItem?> {
         return currentMediaItem
+    }
+
+    fun isFavorite(): StateFlow<Boolean> {
+        if (currentTrack != null) {
+            viewModelScope.launch {
+                _isFavorite.value = repository.isFavorite(currentTrack!!.videoId)
+            }
+        }
+        return _isFavorite.asStateFlow()
     }
 }

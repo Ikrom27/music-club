@@ -89,7 +89,7 @@ fun MiniPlayer(
                 )
             }
             IconButton(onClick = {
-                playerViewModel.addToFavorite(context)
+                playerViewModel.toggleFavorite(context)
             }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_favorite_border),

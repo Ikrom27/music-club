@@ -72,6 +72,7 @@ fun PlayerScreen(
     val context = LocalContext.current
     val currentTrack by remember { mutableStateOf(playerViewModel.currentTrack) }
     val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val isFavorite by playerViewModel.isFavorite().collectAsState()
     val playbackState by playerViewModel.playbackState.collectAsState()
     val totalDuration by rememberSaveable(playbackState) {
         playerViewModel.totalDuration
@@ -127,12 +128,13 @@ fun PlayerScreen(
         PlayerControlButtons(
             modifier = Modifier.padding(top = 42.dp),
             isPlaying = isPlaying,
+            isFavorite = isFavorite,
             onPlayPause = {
                 playerViewModel.player.togglePlayPause()
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                           },
             onNextClick = {playerViewModel.player.seekToNext()},
-            toFavoriteClick = { playerViewModel.addToFavorite(context) },
+            toFavoriteClick = { playerViewModel.toggleFavorite(context) },
             onPreviousClick = {playerViewModel.player.seekToPrevious()}
         )
 
@@ -254,6 +256,7 @@ fun ProgressBar(
 fun PlayerControlButtons(
     modifier: Modifier,
     isPlaying: Boolean,
+    isFavorite: Boolean,
     onPlayPause: () -> Unit,
     onNextClick: () -> Unit,
     toFavoriteClick: () -> Unit,
@@ -276,7 +279,8 @@ fun PlayerControlButtons(
     ) {
         IconButton(onClick = { toFavoriteClick() }) {
             Icon(
-                painter = painterResource(R.drawable.ic_favorite_border),
+                painter = if (isFavorite) painterResource(R.drawable.ic_favorite)
+                            else painterResource(R.drawable.ic_favorite_border),
                 contentDescription = "",
                 modifier = Modifier.size(32.dp)
             )

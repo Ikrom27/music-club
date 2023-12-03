@@ -5,6 +5,7 @@ data class Track(
     val title: String,
     val videoId: String,
     val album: Album,
+    val isFavorite: Boolean = false
 )
 
 data class Album(
