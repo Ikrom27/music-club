@@ -57,7 +57,7 @@ fun HomeScreen(
         ) {
             item {
                 Text(
-                    text = "From Linkin Park",
+                    text = "Лучшее от Linkin Park",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(MAIN_HORIZONTAL_PADDING, 16.dp)
@@ -81,7 +81,7 @@ fun HomeScreen(
             }
             item {
                 Text(
-                    text = "New Release",
+                    text = "Новые релизы",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(MAIN_HORIZONTAL_PADDING, 16.dp)
