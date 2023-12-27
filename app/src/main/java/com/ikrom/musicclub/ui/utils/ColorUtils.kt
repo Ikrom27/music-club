@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.luminance
 import androidx.palette.graphics.Palette
 import com.google.android.material.color.utilities.Score
 
@@ -15,9 +16,12 @@ fun Bitmap.extractThemeColor(): Color {
         .generate()
         .swatches
         .associate { it.rgb to it.population }
-    val rankedColors = Score.score(colorsToPopulation)
-    val finalColor = ColorUtils.blendARGB(
-        Color.Black.toArgb(),
-        Color(rankedColors.first()).toArgb(), 0.3f)
-    return Color(finalColor)
+
+    var color = Score.score(colorsToPopulation).first()
+    if (color.luminance > 0.2){
+        color = ColorUtils.blendARGB(
+            Color.Black.toArgb(),
+            color, 0.5f)
+    }
+    return Color(color)
 }

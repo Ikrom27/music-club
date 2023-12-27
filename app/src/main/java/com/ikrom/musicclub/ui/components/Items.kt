@@ -137,7 +137,7 @@ fun NewReleaseRow(
     }
 
     Column(
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.combinedClickable(
             onClick = onItemClick,
             onLongClick = onLongClick
@@ -164,13 +164,12 @@ fun NewReleaseRow(
                     max = ALBUM_LARGE_COVER_SIZE
                 )
                 .padding(
-                    vertical = 8.dp,
-                    horizontal = 10.dp
+                    top = 8.dp
                 )
+                .padding(horizontal = 8.dp)
         )
         Text(
             text = author,
-            color = Color.Gray,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Left,
@@ -181,10 +180,8 @@ fun NewReleaseRow(
                 .requiredWidthIn(
                     max = ALBUM_LARGE_COVER_SIZE
                 )
-                .padding(
-                    horizontal = 10.dp,
-                )
-                .padding(bottom = 8.dp)
+                .padding(top = 4.dp, bottom = 8.dp)
+                .padding(horizontal = 8.dp)
         )
     }
 }
