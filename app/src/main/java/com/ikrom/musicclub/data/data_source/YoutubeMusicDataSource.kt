@@ -43,11 +43,13 @@ class YoutubeMusicDataSource: IMusicServiceDataSource {
         return responseStateFlow
     }
 
-    override fun getAlbumTracks(albumId: String): MutableState<List<Track>> {
-        val responseStateFlow = mutableStateOf<List<Track>>(ArrayList())
+    override fun getAlbumTracks(albumId: String): MutableStateFlow<List<Track>> {
+        val responseStateFlow = MutableStateFlow<List<Track>>(ArrayList())
         CoroutineScope(Dispatchers.IO).launch {
             YouTube.album(albumId).onSuccess { result ->
                 responseStateFlow.value = result.songs.map { it.toTrack() }
+            }.onFailure {
+                Log.e(TAG, "get album ${albumId} tracks failure")
             }
         }
         return responseStateFlow

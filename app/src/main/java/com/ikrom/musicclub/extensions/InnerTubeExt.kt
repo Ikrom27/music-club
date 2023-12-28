@@ -42,8 +42,7 @@ fun SongItem.toTrack(): Track {
                 )
             },
             cover = this.thumbnail.resize(1024, 1024),
-            year = null,
-
+            year = null
             )
     )
 }

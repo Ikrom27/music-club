@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface IMusicServiceDataSource {
     fun getTracksByQuery(query: String): MutableStateFlow<List<Track>>
     fun getNewReleaseAlbums(): MutableStateFlow<List<Album>>
-    fun getAlbumTracks(albumId: String): MutableState<List<Track>>
+    fun getAlbumTracks(albumId: String): MutableStateFlow<List<Track>>
 }

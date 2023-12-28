@@ -221,7 +221,7 @@ fun TrackColumnItem(
     Column(
         modifier = modifier
             .height(68.dp)
-            .padding(horizontal = MAIN_HORIZONTAL_PADDING, vertical = 10.dp)
+            .padding(vertical = 10.dp)
             .clickable {
                 onItemClick()
             }
@@ -256,7 +256,9 @@ fun TrackColumnItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            IconButton(onClick = {  }) {
+            IconButton(onClick = {
+                onButtonClick()
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_more_horizontal),
                     contentDescription = "",

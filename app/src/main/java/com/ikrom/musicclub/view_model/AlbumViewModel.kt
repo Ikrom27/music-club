@@ -1,12 +1,14 @@
 package com.ikrom.musicclub.view_model
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.repository.MusicServiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,8 +20,12 @@ class AlbumViewModel @Inject constructor(
     val albumTracks = _albumTracks.asStateFlow()
 
     fun loadTracks(){
-        currentAlbum?.let {
-            _albumTracks.value = repository.getAlbumTracks(it.id).value
+        if (currentAlbum != null){
+            viewModelScope.launch {
+                repository.getAlbumTracks(currentAlbum!!.id).collect{
+                    _albumTracks.value = it
+                }
+            }
         }
     }
 }
