@@ -21,6 +21,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.toMediaItem
@@ -29,6 +30,7 @@ import com.ikrom.musicclub.ui.components.NewReleaseRow
 import com.ikrom.musicclub.ui.components.TrackRow
 import com.ikrom.musicclub.ui.theme.BETWEEN_ROW_ITEMS_SPACE
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
+import com.ikrom.musicclub.view_model.AlbumViewModel
 import com.ikrom.musicclub.view_model.HomeViewModel
 import com.ikrom.musicclub.view_model.PlayerViewModel
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,8 +40,10 @@ import kotlinx.coroutines.flow.asStateFlow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     homeViewModel: HomeViewModel,
-    playerViewModel: PlayerViewModel
+    playerViewModel: PlayerViewModel,
+    albumViewModel: AlbumViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -95,7 +99,10 @@ fun HomeScreen(
                             title = album.title,
                             author = album.artists.getNames(),
                             cover = album.cover,
-                            onItemClick = { /*TODO*/},
+                            onItemClick = {
+                                albumViewModel.currentAlbum = album
+                                navController.navigate("album")
+                            },
                             onLongClick = { /*TODO*/ }
                         )
                     }
