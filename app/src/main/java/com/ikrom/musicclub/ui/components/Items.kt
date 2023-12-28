@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
+import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.ui.theme.ALBUM_LARGE_COVER_SIZE
@@ -273,5 +274,35 @@ fun TrackColumnItem(
                 .background(Color.Gray)
                 .padding(top = 4.dp, start = MAIN_HORIZONTAL_PADDING)
         )
+    }
+}
+
+@Composable
+fun AlbumItem(index: Int, track: Track){
+    Column {
+        Row(
+            modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = (index + 1).toString(),
+                fontSize = 16.sp,
+                modifier = Modifier.width(36.dp)
+            )
+            TrackColumnItem(
+                track = track,
+                onItemClick = { /*TODO*/ },
+                onButtonClick = { /*TODO*/ })
+        }
+        Box(
+            modifier = Modifier.padding(start = 36.dp + MAIN_HORIZONTAL_PADDING)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Color.Gray.copy(alpha = 0.2f))
+                    .height(1.dp)
+                    .fillMaxWidth()
+            )
+        }
     }
 }

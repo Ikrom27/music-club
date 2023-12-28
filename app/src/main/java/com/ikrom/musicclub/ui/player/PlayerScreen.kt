@@ -314,7 +314,7 @@ fun PlayerControlButtons(
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(36.dp)
+                    .size(24.dp)
             )
         }
 

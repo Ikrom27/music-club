@@ -39,6 +39,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.extensions.getNames
+import com.ikrom.musicclub.extensions.toMediaItem
+import com.ikrom.musicclub.ui.components.AlbumItem
 import com.ikrom.musicclub.ui.components.TrackColumnItem
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.AlbumViewModel
@@ -55,7 +57,17 @@ fun AlbumScreen(
     if (album != null){
         LazyColumn{
             item {
-                AlbumHeader(album, playerViewModel)
+                AlbumHeader(
+                    album = album,
+                    onPlayClick = {
+                        playerViewModel.playNext(albumTracks.map { it.toMediaItem() })
+                    },
+                    onShuffleClick = {
+
+                    }
+                    )
+            }
+            item {
                 Box(
                     modifier = Modifier
                         .background(Color.Gray.copy(alpha = 0.2f))
@@ -65,32 +77,7 @@ fun AlbumScreen(
                 )
             }
             itemsIndexed(items = albumTracks) {index, track ->
-                Column {
-                    Row(
-                        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = (index + 1).toString(),
-                            fontSize = 16.sp,
-                            modifier = Modifier.width(36.dp)
-                        )
-                        TrackColumnItem(
-                            track = track,
-                            onItemClick = { /*TODO*/ },
-                            onButtonClick = { /*TODO*/ })
-                    }
-                    Box(
-                        modifier = Modifier.padding(start = 36.dp + MAIN_HORIZONTAL_PADDING)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Gray.copy(alpha = 0.2f))
-                                .height(1.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-                }
+                AlbumItem(index, track)
             }
         }
     }
@@ -100,7 +87,8 @@ fun AlbumScreen(
 @Composable
 fun AlbumHeader(
     album: Album,
-    playerViewModel: PlayerViewModel
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit
 ){
     Column(
         modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
@@ -135,7 +123,7 @@ fun AlbumHeader(
                     .width(0.dp)
                     .weight(0.45f)
                     .clip(MaterialTheme.shapes.medium)
-                    .height(44.dp)
+                    .height(40.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .clickable {
 
@@ -160,7 +148,7 @@ fun AlbumHeader(
                     .width(0.dp)
                     .weight(0.45f)
                     .clip(MaterialTheme.shapes.medium)
-                    .height(44.dp)
+                    .height(40.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .clickable {
 
