@@ -23,18 +23,15 @@ class HomeViewModel @Inject constructor(
     private val _releaseList = MutableStateFlow(emptyList<Album>())
     val releaseList = _releaseList.asStateFlow()
 
-    fun getTracksByQuery(query: String) {
-        viewModelScope.launch {
-            repository.getTracksByQuery(query).collect{
-                _queryList.value = it
-            }
-        }
-    }
-
-    fun getNewRelease() {
+    init {
         viewModelScope.launch {
             repository.getNewReleases().collect{
                 _releaseList.value = it
+            }
+        }
+        viewModelScope.launch {
+            repository.getTracksByQuery("Linkin park").collect{
+                _queryList.value = it
             }
         }
     }

@@ -26,10 +26,6 @@ fun ContentContainer(
     playerViewModel: PlayerViewModel,
     navController: NavHostController,
 ) {
-    homeViewModel.getTracksByQuery("Linkin park")
-    homeViewModel.getNewRelease()
-
-
     NavHost(
         navController = navController,
         startDestination = "home")
