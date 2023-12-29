@@ -52,7 +52,6 @@ fun AlbumScreen(
     playerViewModel: PlayerViewModel,
     albumViewModel: AlbumViewModel
 ){
-    albumViewModel.loadTracks()
     val album = albumViewModel.currentAlbum
     val albumTracks by albumViewModel.albumTracks.collectAsState()
     if (album != null){

@@ -16,16 +16,15 @@ class AlbumViewModel @Inject constructor(
     private val repository: MusicServiceRepository
 ): ViewModel() {
     var currentAlbum: Album? = null
-    private val _albumTracks = MutableStateFlow<List<Track>>(emptyList())
-    val albumTracks = _albumTracks.asStateFlow()
-
-    fun loadTracks(){
-        if (currentAlbum != null){
+        set(value) {
+            field = value
             viewModelScope.launch {
-                repository.getAlbumTracks(currentAlbum!!.id).collect{
+                repository.getAlbumTracks(value!!.id).collect{
                     _albumTracks.value = it
                 }
             }
         }
-    }
+
+    private val _albumTracks = MutableStateFlow<List<Track>>(emptyList())
+    val albumTracks = _albumTracks.asStateFlow()
 }
