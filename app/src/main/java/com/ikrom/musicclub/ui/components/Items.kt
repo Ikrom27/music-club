@@ -278,8 +278,16 @@ fun TrackColumnItem(
 }
 
 @Composable
-fun AlbumItem(index: Int, track: Track){
-    Column {
+fun AlbumItem(
+    index: Int,
+    track: Track,
+    onItemClick: () -> Unit,
+    onButtonClick: () -> Unit){
+    Column(
+        modifier = Modifier.clickable {
+            onItemClick()
+        }
+    ) {
         Row(
             modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
             verticalAlignment = Alignment.CenterVertically
@@ -292,7 +300,7 @@ fun AlbumItem(index: Int, track: Track){
             TrackColumnItem(
                 track = track,
                 onItemClick = { /*TODO*/ },
-                onButtonClick = { /*TODO*/ })
+                onButtonClick = { onButtonClick() })
         }
         Box(
             modifier = Modifier.padding(start = 36.dp + MAIN_HORIZONTAL_PADDING)
