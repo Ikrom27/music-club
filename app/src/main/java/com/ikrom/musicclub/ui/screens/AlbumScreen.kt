@@ -52,7 +52,7 @@ fun AlbumScreen(
                         playerViewModel.playNow(albumTracks)
                     },
                     onShuffleClick = {
-
+                        playerViewModel.playNow(albumTracks.shuffled())
                     }
                     )
             }
