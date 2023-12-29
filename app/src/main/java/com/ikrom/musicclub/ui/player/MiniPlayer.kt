@@ -103,7 +103,7 @@ fun MiniPlayer(
                 Icon(
                     painter = painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
                     contentDescription = "Next",
-                    modifier = Modifier.size(26.dp)
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }
