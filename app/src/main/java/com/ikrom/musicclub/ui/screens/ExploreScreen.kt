@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import com.ikrom.musicclub.extensions.toMediaItem
 import com.ikrom.musicclub.ui.components.ExploreBar
 import com.ikrom.musicclub.ui.components.TrackColumnItem
+import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
 import com.ikrom.musicclub.ui.theme.NAVBAR_HEIGHT
 import com.ikrom.musicclub.view_model.ExploreViewModel
@@ -51,13 +53,14 @@ fun ExploreScreen(
                 top = it.calculateTopPadding(),
                 bottom = MINI_PLAYER_HEIGHT + NAVBAR_HEIGHT)
         ){
-            items(items = requestList, key = {it.videoId}){
+            items(items = requestList){track ->
                 TrackColumnItem(
-                    track = it,
+                    track = track,
                     onItemClick = {
-                        playerViewModel.playNow(it)
+                        playerViewModel.playNow(track)
                     },
-                    onButtonClick = {}
+                    onButtonClick = {},
+                    modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING)
                 )
             }
         }

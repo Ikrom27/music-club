@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -215,24 +216,33 @@ fun NewReleaseRow(
 @Composable
 fun TrackColumnItem(
     track: Track,
+    index: Int? = null,
     onItemClick: () -> Unit,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
-        modifier = modifier
-            .height(68.dp)
-            .padding(vertical = 10.dp)
+        modifier = Modifier
             .clickable {
                 onItemClick()
             }
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .height(68.dp)
+                .padding(vertical = 8.dp)
         ){
+            if (index != null){
+                Text(
+                    text = (index + 1).toString(),
+                    fontSize = 16.sp,
+                    modifier = Modifier.width(36.dp)
+                )
+            }
             GlideImage(
                 model = track.album.cover,
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxHeight()
                     .clip(MaterialTheme.shapes.small)
@@ -266,51 +276,6 @@ fun TrackColumnItem(
                     modifier = Modifier.size(22.dp)
                 )
             }
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-                .padding(top = 4.dp, start = MAIN_HORIZONTAL_PADDING)
-        )
-    }
-}
-
-@Composable
-fun AlbumItem(
-    index: Int,
-    track: Track,
-    onItemClick: () -> Unit,
-    onButtonClick: () -> Unit){
-    Column(
-        modifier = Modifier.clickable {
-            onItemClick()
-        }
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = (index + 1).toString(),
-                fontSize = 16.sp,
-                modifier = Modifier.width(36.dp)
-            )
-            TrackColumnItem(
-                track = track,
-                onItemClick = { /*TODO*/ },
-                onButtonClick = { onButtonClick() })
-        }
-        Box(
-            modifier = Modifier.padding(start = 36.dp + MAIN_HORIZONTAL_PADDING)
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
-                    .height(1.dp)
-                    .fillMaxWidth()
-            )
         }
     }
 }
