@@ -159,7 +159,7 @@ fun TrackInfo(
     isPlaying: Boolean,
     onButtonClick: () -> Unit
 ){
-    val coverPadding by remember { mutableStateOf(0f) }
+    val coverPadding by remember { mutableStateOf(if (isPlaying) 0f else 40f) }
     val coverSizeAnimatable = remember { Animatable(coverPadding) }
 
     LaunchedEffect(isPlaying) {

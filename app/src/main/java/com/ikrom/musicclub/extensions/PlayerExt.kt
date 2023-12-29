@@ -13,7 +13,9 @@ val Player.currentMetaData: MediaMetadata?
     get() = currentMediaItem?.mediaMetadata
 
 fun Player.togglePlayPause() {
-    playWhenReady = !playWhenReady
+    if (currentMediaItem != null){
+        playWhenReady = !playWhenReady
+    }
 }
 
 @OptIn(UnstableApi::class)
