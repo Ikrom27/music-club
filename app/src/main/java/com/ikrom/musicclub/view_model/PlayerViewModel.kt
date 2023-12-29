@@ -96,14 +96,18 @@ class PlayerViewModel @Inject constructor(
         addToFavorite(context)
     }
 
-    fun playNow(track: Track){
-        currentTrack = track
-        if (player.currentMediaItem != track.toMediaItem()){
+    fun playNow(tracks: List<Track>){
+        currentTrack = tracks.first()
+        if (player.currentMediaItem != tracks.first().toMediaItem()){
             player.clearMediaItems()
-            player.setMediaItems(listOf(track.toMediaItem()))
+            player.setMediaItems(tracks.map { it.toMediaItem() })
             player.prepare()
             player.playWhenReady = true
         }
+    }
+
+    fun playNow(track: Track){
+        playNow(listOf(track))
     }
 
     fun playNext(item: MediaItem){

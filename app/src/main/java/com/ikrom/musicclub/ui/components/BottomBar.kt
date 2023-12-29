@@ -41,7 +41,7 @@ fun BottomBar(
     navigationItems: List<Screens>,
     onPlayerClick: () -> Unit
 ){
-    val showBottomBar = navBackStackEntry?.destination?.route in navigationItems.map { it.route }
+    val showBottomBar = navBackStackEntry?.destination?.route != "player"
     val verticalOffset by animateFloatAsState(
         targetValue = if (showBottomBar) 0f else with(LocalDensity.current) {
             (NAVBAR_HEIGHT).toPx() + (MINI_PLAYER_HEIGHT).toPx()

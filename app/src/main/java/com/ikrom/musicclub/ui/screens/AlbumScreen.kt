@@ -49,7 +49,7 @@ fun AlbumScreen(
                 AlbumHeader(
                     album = album,
                     onPlayClick = {
-                        playerViewModel.playNext(albumTracks.map { it.toMediaItem() })
+                        playerViewModel.playNow(albumTracks)
                     },
                     onShuffleClick = {
 
@@ -120,7 +120,7 @@ fun AlbumHeader(
                     .height(40.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .clickable {
-
+                        onPlayClick()
                     }
             ) {
                 Icon(
@@ -145,7 +145,7 @@ fun AlbumHeader(
                     .height(40.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .clickable {
-
+                        onShuffleClick()
                     }
             ) {
                 Icon(
