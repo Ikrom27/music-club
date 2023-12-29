@@ -133,18 +133,6 @@ fun NewReleaseRow(
     onItemClick: () -> Unit,
     onLongClick: () -> Unit,
 ){
-    var color by remember { mutableStateOf(Color.Transparent) }
-
-    LaunchedEffect(cover) {
-        val image = withContext(Dispatchers.IO) {
-            BitmapFactory.decodeStream(URL(cover).openConnection().getInputStream())
-        }
-        val extractedColor = withContext(Dispatchers.Default) {
-            image.extractThemeColor()
-        }
-        color = extractedColor
-    }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

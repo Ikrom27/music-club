@@ -77,13 +77,11 @@ fun HomeScreen(
                             cover = track.album.cover,
                             onItemClick = {
                                 playerViewModel.playNow(track)
-                                          },
+                            },
                             onLongClick = { /*TODO*/ }
                         )
                     }
                 }
-            }
-            item {
                 Text(
                     text = "Новые релизы",
                     fontSize = 28.sp,
