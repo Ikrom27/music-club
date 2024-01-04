@@ -30,18 +30,29 @@ fun ExploreScreen(
     exploreViewModel: ExploreViewModel,
     playerViewModel: PlayerViewModel
 ){
-    var userInput by remember { mutableStateOf(exploreViewModel.userInput) }
+    var userInput by remember { mutableStateOf( exploreViewModel.userInput) }
     val requestList by exploreViewModel.requestList.collectAsState()
+    val searchHistory by exploreViewModel.searchHistory.collectAsState()
 
     Scaffold(
         topBar = {
             ExploreBar(
                 userInput = userInput,
-                onQueryChange = {userInput = it},
+                onQueryChange = {
+                    userInput = it
+                    exploreViewModel.updateSearchHistory(it)
+                },
                 onSearchClick = {
                     exploreViewModel.userInput = it
                     exploreViewModel.search()
                 },
+                searchHistoryList = searchHistory,
+                onButtonClick = {
+                    exploreViewModel.deleteSearchHistory(it.query)
+                },
+                onItemClick = {
+                    userInput = it.query
+                }
             )
         }
     ) {

@@ -15,3 +15,10 @@ data class TrackEntity(
     val artistId: String,
     val artistName: String
 )
+
+@Entity
+data class SearchHistory (
+    @PrimaryKey
+    val query: String,
+    val date: Long = System.currentTimeMillis()
+)

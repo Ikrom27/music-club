@@ -1,11 +1,15 @@
 package com.ikrom.musicclub.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ikrom.musicclub.R
+import com.ikrom.musicclub.data.model.SearchHistory
+import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +40,10 @@ import com.ikrom.musicclub.R
 fun ExploreBar(
     userInput: String,
     onQueryChange: (String) -> Unit,
-    onSearchClick: (String) -> Unit
+    onSearchClick: (String) -> Unit,
+    onButtonClick: (SearchHistory) -> Unit,
+    onItemClick: (SearchHistory) -> Unit,
+    searchHistoryList: List<SearchHistory>
 ) {
     var isActive by remember { mutableStateOf(false) }
     SearchBar(
@@ -51,7 +60,29 @@ fun ExploreBar(
             isActive = it
         },
         modifier = Modifier.fillMaxWidth(),
-    ) {}
+    ) {
+        LazyColumn {
+            items(items = searchHistoryList){
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 3.dp)
+                        .clickable {
+                            onItemClick(it)
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HistoryText(
+                        it.query,
+                        onButtonClick = {
+                            onButtonClick(it)
+                        },
+                        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING / 2 )
+                    )
+                }
+            }
+
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

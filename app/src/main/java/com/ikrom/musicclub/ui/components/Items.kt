@@ -267,3 +267,37 @@ fun TrackColumnItem(
         }
     }
 }
+
+@Composable
+fun HistoryText(
+    text: String = "",
+    modifier: Modifier = Modifier,
+    onButtonClick: () -> Unit
+){
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_history),
+            contentDescription = null,
+        )
+        Text(
+            text = text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+        )
+        IconButton(
+            onClick = { onButtonClick() },
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+            )
+        }
+    }
+
+}

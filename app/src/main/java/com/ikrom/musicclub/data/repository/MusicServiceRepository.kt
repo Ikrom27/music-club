@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import com.ikrom.musicclub.data.data_source.IMusicServiceDataSource
 import com.ikrom.musicclub.data.data_source.LocalDataSource
 import com.ikrom.musicclub.data.model.Album
+import com.ikrom.musicclub.data.model.SearchHistory
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.model.TrackEntity
 import com.ikrom.musicclub.extensions.toTrackEntity
@@ -25,6 +26,18 @@ class MusicServiceRepository @Inject constructor(
 
     fun getAlbumTracks(albumId: String): MutableStateFlow<List<Track>> {
         return youtubeService.getAlbumTracks(albumId)
+    }
+
+    suspend fun addToSearchHistory(searchHistory: SearchHistory){
+        localDataSource.addQueryToHistory(searchHistory)
+    }
+
+    suspend fun getSearchHistoryList(query: String): MutableStateFlow<List<SearchHistory>>{
+        return localDataSource.getSearchHistoryList(query)
+    }
+
+    suspend fun deleteFromSearchHistory(query: String) {
+        localDataSource.deleteSearchHistory(query)
     }
 
     suspend fun getFavoriteTracks(): MutableStateFlow<List<Track>>{

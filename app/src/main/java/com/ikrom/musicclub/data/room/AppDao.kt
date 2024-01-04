@@ -4,10 +4,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.ikrom.musicclub.data.model.SearchHistory
 import com.ikrom.musicclub.data.model.TrackEntity
 
 @Dao
 interface AppDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSearchHistory(searchHistory: SearchHistory)
+    @Query("SELECT * FROM SearchHistory WHERE SearchHistory.`query` LIKE :query || '%' ORDER BY SearchHistory.date")
+    suspend fun getSearchHistoryList(query: String): List<SearchHistory>
+
+    @Query("DELETE FROM SearchHistory WHERE `query` = :query")
+    suspend fun deleteSearchHistory(query: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: TrackEntity)
 
