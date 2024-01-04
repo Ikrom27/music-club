@@ -1,5 +1,8 @@
 package com.ikrom.musicclub.ui.screens
 
+import android.annotation.SuppressLint
+import android.widget.ImageButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,12 +12,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,56 +32,83 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.extensions.getNames
-import com.ikrom.musicclub.extensions.toMediaItem
+import com.ikrom.musicclub.ui.components.AlbumTopBar
 import com.ikrom.musicclub.ui.components.TrackColumnItem
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.AlbumViewModel
 import com.ikrom.musicclub.view_model.PlayerViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AlbumScreen(
+    navController: NavController,
     playerViewModel: PlayerViewModel,
     albumViewModel: AlbumViewModel
 ){
     val album = albumViewModel.currentAlbum
     val albumTracks by albumViewModel.albumTracks.collectAsState()
-    if (album != null){
-        LazyColumn{
-            item {
-                AlbumHeader(
-                    album = album,
-                    onPlayClick = {
-                        playerViewModel.playNow(albumTracks)
-                    },
-                    onShuffleClick = {
-                        playerViewModel.playNow(albumTracks.shuffled())
-                    }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            AlbumTopBar(
+                onMenuClick = { },
+                onBackClick = { },
+                onFavoriteClick = {},
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) {
+        if (album != null){
+            LazyColumn(
+                modifier = Modifier.padding(top = it.calculateTopPadding())
+            ){
+                item {
+                    AlbumHeader(
+                        album = album,
+                        onPlayClick = {
+                            playerViewModel.playNow(albumTracks)
+                        },
+                        onShuffleClick = {
+                            playerViewModel.playNow(albumTracks.shuffled())
+                        },
+                        onBackClick = {
+
+                        },
+                        onMenuClick = {
+
+                        }
                     )
-            }
-            item {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Gray.copy(alpha = 0.2f))
-                        .height(1.dp)
-                        .fillMaxWidth()
-                        .padding(start = 36.dp)
-                )
-            }
-            itemsIndexed(items = albumTracks) {index, track ->
-                TrackColumnItem(
-                    index = index,
-                    track = track,
-                    onItemClick = { playerViewModel.playNow(track) },
-                    onButtonClick = {},
-                    modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING))
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Gray.copy(alpha = 0.2f))
+                            .height(1.dp)
+                            .fillMaxWidth()
+                            .padding(start = 36.dp)
+                    )
+                }
+                itemsIndexed(items = albumTracks) {index, track ->
+                    TrackColumnItem(
+                        index = index,
+                        track = track,
+                        onItemClick = { playerViewModel.playNow(track) },
+                        onButtonClick = {},
+                        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING))
+                }
             }
         }
     }
@@ -82,7 +119,9 @@ fun AlbumScreen(
 fun AlbumHeader(
     album: Album,
     onPlayClick: () -> Unit,
-    onShuffleClick: () -> Unit
+    onShuffleClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    onBackClick: () -> Unit
 ){
     Column(
         modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING),

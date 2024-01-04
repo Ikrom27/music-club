@@ -105,7 +105,7 @@ fun PlayerScreen(
             .width(70.dp)
             .height(5.dp)
             .clip(MaterialTheme.shapes.extraLarge)
-            .background(Color.Gray.copy(alpha = 0.3f))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
         )
 
         TrackInfo(

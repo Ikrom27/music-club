@@ -48,7 +48,11 @@ fun ContentContainer(
             ProfileScreen()
         }
         composable("album"){
-            AlbumScreen(playerViewModel = playerViewModel, albumViewModel = albumViewModel)
+            AlbumScreen(
+                navController = navController,
+                playerViewModel = playerViewModel,
+                albumViewModel = albumViewModel
+            )
         }
     }
 }
