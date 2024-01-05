@@ -1,5 +1,7 @@
 package com.ikrom.musicclub.ui.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,9 +31,11 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.ikrom.musicclub.R
 import com.ikrom.musicclub.data.model.SearchHistory
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
+import androidx.compose.ui.platform.LocalDensity
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,9 +54,20 @@ fun ExploreBar(
     onSearchClick: (String) -> Unit,
     onButtonClick: (SearchHistory) -> Unit,
     onItemClick: (SearchHistory) -> Unit,
+    onClearClick: () -> Unit,
     searchHistoryList: List<SearchHistory>
 ) {
     var isActive by remember { mutableStateOf(false) }
+    val fieldPadding by remember { mutableStateOf(if (isActive) 0f else 15f) }
+    val fieldPaddingAnimatable = remember { Animatable(fieldPadding) }
+
+    LaunchedEffect(isActive) {
+        fieldPaddingAnimatable.animateTo(
+            targetValue = if (isActive) 0f else 15f,
+            animationSpec = tween(150)
+        )
+    }
+
     SearchBar(
         query = userInput,
         onQueryChange = {
@@ -65,7 +81,22 @@ fun ExploreBar(
         onActiveChange = {
             isActive = it
         },
-        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        leadingIcon = {
+            Icon(painter = painterResource(id = R.drawable.ic_search), contentDescription = null)
+        },
+        trailingIcon = {
+            if (userInput.isNotEmpty()){
+                IconButton(onClick = {
+                    onClearClick()
+                }) {
+                    Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = null)
+                }
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = fieldPaddingAnimatable.value.dp),
     ) {
         LazyColumn {
             items(items = searchHistoryList){

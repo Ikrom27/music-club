@@ -52,6 +52,10 @@ fun ExploreScreen(
                 },
                 onItemClick = {
                     userInput = it.query
+                },
+                onClearClick = {
+                    userInput = ""
+                    exploreViewModel.search("")
                 }
             )
         }
