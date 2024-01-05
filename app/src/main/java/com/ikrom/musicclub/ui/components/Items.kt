@@ -255,13 +255,14 @@ fun TrackColumnItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.size(32.dp),
+                onClick = {
                 onButtonClick()
             }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_more_horizontal),
                     contentDescription = "",
-                    modifier = Modifier.size(22.dp)
                 )
             }
         }
