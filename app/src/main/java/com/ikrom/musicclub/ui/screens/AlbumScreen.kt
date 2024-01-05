@@ -65,7 +65,7 @@ fun AlbumScreen(
         topBar = {
             AlbumTopBar(
                 onMenuClick = { },
-                onBackClick = { },
+                onBackClick = { navController.popBackStack() },
                 onFavoriteClick = {},
                 scrollBehavior = scrollBehavior
             )
@@ -136,14 +136,15 @@ fun AlbumHeader(
         )
         Text(
             text = album.title,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             style = MaterialTheme.typography.titleMedium
         )
         Text(
             text = album.artists.getNames(),
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 2.dp)
         )
         Row(
             modifier = Modifier

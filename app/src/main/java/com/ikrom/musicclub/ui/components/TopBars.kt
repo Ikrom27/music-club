@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -140,17 +141,26 @@ fun AlbumTopBar(
         title = {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = MAIN_HORIZONTAL_PADDING, vertical = 4.dp),
+                    .padding(vertical = 4.dp)
+                    .padding(end = MAIN_HORIZONTAL_PADDING)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Box(modifier = Modifier.clickable {
-                    onBackClick()
-                }){
+                Box(modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        onBackClick()
+                    }){
                     Icon(
                         painter = painterResource(R.drawable.ic_array_back),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize()
+                            .padding(8.dp)
+                            .padding(end = 2.dp)
                     )
                 }
                 Spacer(modifier = Modifier
@@ -200,5 +210,4 @@ fun AlbumTopBar(
             scrolledContainerColor = MaterialTheme.colorScheme.background
         )
     )
-
 }
