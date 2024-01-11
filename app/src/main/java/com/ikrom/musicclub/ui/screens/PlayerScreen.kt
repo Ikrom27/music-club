@@ -1,4 +1,4 @@
-package com.ikrom.musicclub.ui.player
+package com.ikrom.musicclub.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.Animatable
@@ -54,7 +54,6 @@ import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.togglePlayPause
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.utils.makeTimeString
-import com.ikrom.musicclub.playback.PlayerConnection
 import com.ikrom.musicclub.view_model.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -146,6 +145,7 @@ fun PlayerScreen(
     }
 }
 
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TrackInfo(
@@ -174,27 +174,34 @@ fun TrackInfo(
                 .clip(MaterialTheme.shapes.large)
         )
     }
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 24.dp)
     ){
-        Column {
+        Column(
+            modifier = Modifier
+                .padding(end = MAIN_HORIZONTAL_PADDING + 5.dp)
+                .align(Alignment.CenterStart)
+        ){
             Text(
                 text = track?.title ?: "---",
+                maxLines = 1,
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 24.sp
             )
             Text(
                 text = track?.album?.artists?.getNames() ?: "---",
+                maxLines = 1,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 18.sp
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Column {
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+        ) {
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -229,7 +236,7 @@ fun ProgressBar(
             onSeek(it)
         },
         onValueChangeFinished = { onSeekChanged() },
-        modifier = Modifier.padding(top = 24.dp)
+        modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
     )
 
     Row{

@@ -1,4 +1,4 @@
-package com.ikrom.musicclub.ui.player
+package com.ikrom.musicclub.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

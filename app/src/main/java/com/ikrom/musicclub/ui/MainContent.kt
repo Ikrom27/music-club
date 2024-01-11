@@ -25,7 +25,7 @@ import com.ikrom.musicclub.ui.components.BottomBar
 import com.ikrom.musicclub.ui.components.BottomSheet
 import com.ikrom.musicclub.ui.components.Screens
 import com.ikrom.musicclub.ui.components.rememberBottomSheetState
-import com.ikrom.musicclub.ui.player.PlayerScreen
+import com.ikrom.musicclub.ui.screens.PlayerScreen
 import com.ikrom.musicclub.playback.PlayerConnection
 import com.ikrom.musicclub.view_model.PlayerViewModel
 

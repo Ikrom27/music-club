@@ -25,7 +25,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.ikrom.musicclub.ui.player.MiniPlayer
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
 import com.ikrom.musicclub.ui.theme.NAVBAR_HEIGHT
 import com.ikrom.musicclub.playback.PlayerConnection
