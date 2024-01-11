@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -28,6 +29,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
 import com.ikrom.musicclub.ui.theme.NAVBAR_HEIGHT
 import com.ikrom.musicclub.playback.PlayerConnection
+import com.ikrom.musicclub.ui.screens.MiniPlayer
 import kotlin.math.roundToInt
 
 
@@ -41,9 +43,17 @@ fun BottomBar(
     onPlayerClick: () -> Unit
 ){
     val showBottomBar = navBackStackEntry?.destination?.route != "player"
+    val showMiniBar = playerConnection.isPlaying.collectAsState()
     val verticalOffset by animateFloatAsState(
         targetValue = if (showBottomBar) 0f else with(LocalDensity.current) {
             (NAVBAR_HEIGHT).toPx() + (MINI_PLAYER_HEIGHT).toPx()
+        },
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+        label = ""
+    )
+    val miniBarVerticalOffset by animateFloatAsState(
+        targetValue = if (showMiniBar.value) 0f else with(LocalDensity.current) {
+            (MINI_PLAYER_HEIGHT).toPx()
         },
         animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
         label = ""
@@ -52,7 +62,9 @@ fun BottomBar(
         MiniPlayer(
             playerConnection = playerConnection,
             onClick = { onPlayerClick() },
-            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+            modifier = Modifier
+                .offset { IntOffset(x = 0, y = miniBarVerticalOffset.roundToInt()) }
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
         )
         BottomAppBar{
             navigationItems.forEach { screen ->
