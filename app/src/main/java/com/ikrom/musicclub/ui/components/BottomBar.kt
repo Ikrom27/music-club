@@ -28,7 +28,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.ikrom.musicclub.ui.player.MiniPlayer
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
 import com.ikrom.musicclub.ui.theme.NAVBAR_HEIGHT
-import com.ikrom.musicclub.view_model.PlayerViewModel
+import com.ikrom.musicclub.playback.PlayerConnection
 import kotlin.math.roundToInt
 
 
@@ -36,7 +36,7 @@ import kotlin.math.roundToInt
 @UnstableApi
 fun BottomBar(
     navController: NavController,
-    playerViewModel: PlayerViewModel,
+    playerConnection: PlayerConnection,
     navBackStackEntry: NavBackStackEntry?,
     navigationItems: List<Screens>,
     onPlayerClick: () -> Unit
@@ -51,7 +51,7 @@ fun BottomBar(
     )
     Column(modifier = Modifier.offset { IntOffset(x = 0, y = verticalOffset.roundToInt()) }) {
         MiniPlayer(
-            playerViewModel = playerViewModel,
+            playerConnection = playerConnection,
             onClick = { onPlayerClick() },
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
         )

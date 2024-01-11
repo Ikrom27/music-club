@@ -26,6 +26,7 @@ import com.ikrom.musicclub.ui.components.BottomSheet
 import com.ikrom.musicclub.ui.components.Screens
 import com.ikrom.musicclub.ui.components.rememberBottomSheetState
 import com.ikrom.musicclub.ui.player.PlayerScreen
+import com.ikrom.musicclub.playback.PlayerConnection
 import com.ikrom.musicclub.view_model.PlayerViewModel
 
 
@@ -33,7 +34,8 @@ import com.ikrom.musicclub.view_model.PlayerViewModel
 @UnstableApi
 @Composable
 fun MainContent(
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    playerViewModel: PlayerViewModel = hiltViewModel(),
+    playerConnection: PlayerConnection = playerViewModel.playerConnection
 ){
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -56,7 +58,7 @@ fun MainContent(
                 Column {
                     BottomBar(
                         navController,
-                        playerViewModel,
+                        playerConnection,
                         navBackStackEntry,
                         navigationItems,
                         onPlayerClick = {
@@ -69,7 +71,7 @@ fun MainContent(
         ){
             ContentContainer(
                 navController = navController,
-                playerViewModel = playerViewModel,
+                playerConnection = playerConnection,
             )
         }
 

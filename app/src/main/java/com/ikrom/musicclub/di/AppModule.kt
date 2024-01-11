@@ -17,6 +17,7 @@ import com.ikrom.musicclub.data.room.AppDataBase
 import com.ikrom.musicclub.playback.MusicNotificationManager
 import com.ikrom.musicclub.utils.MediaSourceFactory
 import com.ikrom.musicclub.playback.MusicPlayerService
+import com.ikrom.musicclub.playback.PlayerConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -117,4 +118,11 @@ class AppModule {
         @ApplicationContext context: Context,
         player: ExoPlayer
     ) : MusicNotificationManager = MusicNotificationManager(context, player)
+
+    @Provides
+    @Singleton
+    fun providePlayerConnection(
+        player: ExoPlayer,
+        repository: MusicServiceRepository,
+    ) : PlayerConnection = PlayerConnection(player, repository)
 }

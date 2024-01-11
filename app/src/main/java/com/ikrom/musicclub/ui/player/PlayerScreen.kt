@@ -1,7 +1,6 @@
 package com.ikrom.musicclub.ui.player
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -37,30 +36,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.offline.DownloadRequest
-import androidx.media3.exoplayer.offline.DownloadService
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ikrom.musicclub.R
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.extensions.getNames
 import com.ikrom.musicclub.extensions.togglePlayPause
-import com.ikrom.musicclub.playback.ExoDownloadService
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.utils.makeTimeString
+import com.ikrom.musicclub.playback.PlayerConnection
 import com.ikrom.musicclub.view_model.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -73,15 +67,15 @@ fun PlayerScreen(
 ){
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
-    val currentTrack by remember { mutableStateOf(playerViewModel.currentTrack) }
-    val isPlaying by playerViewModel.isPlaying.collectAsState()
-    val isFavorite by playerViewModel.isFavorite().collectAsState()
-    val playbackState by playerViewModel.playbackState.collectAsState()
+    val currentTrack by remember { mutableStateOf(playerViewModel.playerConnection.currentTrack) }
+    val isPlaying by playerViewModel.playerConnection.isPlaying.collectAsState()
+    val isFavorite by playerViewModel.playerConnection.isFavorite().collectAsState()
+    val playbackState by playerViewModel.playerConnection.playbackState.collectAsState()
     val totalDuration by rememberSaveable(playbackState) {
-        playerViewModel.totalDuration
+        playerViewModel.playerConnection.totalDuration
     }
     var currentPosition by rememberSaveable(playbackState) {
-        playerViewModel.currentPosition
+        playerViewModel.playerConnection.currentPosition
     }
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
@@ -90,7 +84,7 @@ fun PlayerScreen(
     if (isPlaying) {
         LaunchedEffect(Unit) {
             while(true) {
-                currentPosition = playerViewModel.player.currentPosition
+                currentPosition = playerViewModel.playerConnection.player.currentPosition
                 delay(1.seconds / 15)
             }
         }
@@ -121,7 +115,7 @@ fun PlayerScreen(
             onSeek = { sliderPosition = it.toLong() },
             onSeekChanged = {
                 sliderPosition?.let {
-                    playerViewModel.player.seekTo(it)
+                    playerViewModel.playerConnection.player.seekTo(it)
                     currentPosition = it
                 }
                 sliderPosition = null
@@ -133,12 +127,12 @@ fun PlayerScreen(
             isPlaying = isPlaying,
             isFavorite = isFavorite,
             onPlayPause = {
-                playerViewModel.player.togglePlayPause()
+                playerViewModel.playerConnection.player.togglePlayPause()
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                           },
-            onNextClick = {playerViewModel.player.seekToNext()},
-            toFavoriteClick = { playerViewModel.toggleFavorite(context) },
-            onPreviousClick = {playerViewModel.player.seekToPrevious()}
+            onNextClick = {playerViewModel.playerConnection.player.seekToNext()},
+            toFavoriteClick = { playerViewModel.playerConnection.toggleFavorite(context) },
+            onPreviousClick = {playerViewModel.playerConnection.player.seekToPrevious()}
         )
 
         AdditionalButtons(

@@ -15,16 +15,13 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.ikrom.musicclub.extensions.getNames
-import com.ikrom.musicclub.extensions.toMediaItem
 import com.ikrom.musicclub.ui.components.ApplicationTopBar
 import com.ikrom.musicclub.ui.components.NewReleaseRow
 import com.ikrom.musicclub.ui.components.TrackRow
@@ -32,8 +29,7 @@ import com.ikrom.musicclub.ui.theme.BETWEEN_ROW_ITEMS_SPACE
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.view_model.AlbumViewModel
 import com.ikrom.musicclub.view_model.HomeViewModel
-import com.ikrom.musicclub.view_model.PlayerViewModel
-import kotlinx.coroutines.flow.asStateFlow
+import com.ikrom.musicclub.playback.PlayerConnection
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -42,7 +38,7 @@ import kotlinx.coroutines.flow.asStateFlow
 fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
-    playerViewModel: PlayerViewModel,
+    playerConnection: PlayerConnection,
     albumViewModel: AlbumViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -76,7 +72,7 @@ fun HomeScreen(
                             author = track.album.artists.getNames(),
                             cover = track.album.cover,
                             onItemClick = {
-                                playerViewModel.playNow(track)
+                                playerConnection.playNow(track)
                             },
                             onLongClick = { /*TODO*/ }
                         )

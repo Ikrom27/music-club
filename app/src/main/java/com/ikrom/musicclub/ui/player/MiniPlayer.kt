@@ -32,19 +32,19 @@ import com.ikrom.musicclub.R
 import com.ikrom.musicclub.extensions.togglePlayPause
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import com.ikrom.musicclub.ui.theme.MINI_PLAYER_HEIGHT
-import com.ikrom.musicclub.view_model.PlayerViewModel
+import com.ikrom.musicclub.playback.PlayerConnection
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @UnstableApi
 @Composable
 fun MiniPlayer(
-    playerViewModel: PlayerViewModel,
+    playerConnection: PlayerConnection,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val currentTrack by remember { playerViewModel.getCurrentMediaItem() }
-    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val currentTrack by remember { playerConnection.getCurrentMediaItem() }
+    val isPlaying by playerConnection.isPlaying.collectAsState()
     val context = LocalContext.current
 
     Box(
@@ -89,7 +89,7 @@ fun MiniPlayer(
                 )
             }
             IconButton(onClick = {
-                playerViewModel.toggleFavorite(context)
+                playerConnection.toggleFavorite(context)
             }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_favorite_border),
@@ -98,7 +98,7 @@ fun MiniPlayer(
                 )
             }
             IconButton(
-                onClick = { playerViewModel.player.togglePlayPause() },
+                onClick = { playerConnection.player.togglePlayPause() },
             ) {
                 Icon(
                     painter = painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),

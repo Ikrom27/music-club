@@ -1,20 +1,19 @@
 package com.ikrom.musicclub.ui.screens
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ikrom.musicclub.ui.components.TrackColumnItem
 import com.ikrom.musicclub.view_model.LibraryViewModel
-import com.ikrom.musicclub.view_model.PlayerViewModel
+import com.ikrom.musicclub.playback.PlayerConnection
 
 
 @Composable
 fun LibraryScreen(
     libraryViewModel: LibraryViewModel,
-    playerViewModel: PlayerViewModel
+    playerConnection: PlayerConnection
 ){
     libraryViewModel.getFavoriteTracks()
 
@@ -26,7 +25,7 @@ fun LibraryScreen(
                 track = it,
                 index = index,
                 onItemClick = {
-                    playerViewModel.playNow(it)
+                    playerConnection.playNow(it)
                 },
                 onButtonClick = { /*TODO*/ })
         }

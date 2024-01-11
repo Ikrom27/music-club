@@ -28,13 +28,15 @@ class ExploreViewModel @Inject constructor(private val repository: MusicServiceR
     }
 
     fun search(query: String = userInput) {
-        viewModelScope.launch{
-            repository.getTracksByQuery(query).collect{
-                _requestList.value = it
+        if (query.isNotBlank()){
+            viewModelScope.launch{
+                repository.getTracksByQuery(query).collect{
+                    _requestList.value = it
+                }
             }
-        }
-        viewModelScope.launch {
-            repository.addToSearchHistory(SearchHistory(query = query))
+            viewModelScope.launch {
+                repository.addToSearchHistory(SearchHistory(query = query))
+            }
         }
     }
 

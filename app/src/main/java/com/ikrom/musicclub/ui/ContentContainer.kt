@@ -14,7 +14,7 @@ import com.ikrom.musicclub.view_model.AlbumViewModel
 import com.ikrom.musicclub.view_model.ExploreViewModel
 import com.ikrom.musicclub.view_model.HomeViewModel
 import com.ikrom.musicclub.view_model.LibraryViewModel
-import com.ikrom.musicclub.view_model.PlayerViewModel
+import com.ikrom.musicclub.playback.PlayerConnection
 
 
 @Composable
@@ -23,7 +23,7 @@ fun ContentContainer(
     exploreViewModel: ExploreViewModel = hiltViewModel(),
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     albumViewModel: AlbumViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel,
+    playerConnection: PlayerConnection,
     navController: NavHostController,
 ) {
     NavHost(
@@ -34,15 +34,15 @@ fun ContentContainer(
             HomeScreen(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                playerViewModel = playerViewModel,
+                playerConnection = playerConnection,
                 albumViewModel = albumViewModel
             )
         }
         composable("explore"){
-            ExploreScreen(exploreViewModel = exploreViewModel, playerViewModel)
+            ExploreScreen(exploreViewModel = exploreViewModel, playerConnection)
         }
         composable("library"){
-            LibraryScreen(libraryViewModel, playerViewModel)
+            LibraryScreen(libraryViewModel, playerConnection)
         }
         composable("profile"){
             ProfileScreen()
@@ -50,7 +50,7 @@ fun ContentContainer(
         composable("album"){
             AlbumScreen(
                 navController = navController,
-                playerViewModel = playerViewModel,
+                playerConnection = playerConnection,
                 albumViewModel = albumViewModel
             )
         }
