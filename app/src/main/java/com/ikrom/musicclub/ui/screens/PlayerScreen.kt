@@ -66,7 +66,7 @@ fun PlayerScreen(
 ){
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
-    val currentTrack by remember { mutableStateOf(playerViewModel.playerConnection.currentTrack) }
+    val currentTrack by playerViewModel.playerConnection.currentTrack.collectAsState()
     val isPlaying by playerViewModel.playerConnection.isPlaying.collectAsState()
     val isFavorite by playerViewModel.playerConnection.isFavorite().collectAsState()
     val playbackState by playerViewModel.playerConnection.playbackState.collectAsState()
@@ -90,7 +90,10 @@ fun PlayerScreen(
     }
 
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)).fillMaxHeight().padding(horizontal = MAIN_HORIZONTAL_PADDING),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+            .fillMaxHeight()
+            .padding(horizontal = MAIN_HORIZONTAL_PADDING),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier
@@ -236,7 +239,9 @@ fun ProgressBar(
             onSeek(it)
         },
         onValueChangeFinished = { onSeekChanged() },
-        modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(top = 24.dp)
+            .fillMaxWidth()
     )
 
     Row{

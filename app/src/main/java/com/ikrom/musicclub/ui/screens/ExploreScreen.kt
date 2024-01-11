@@ -66,8 +66,7 @@ fun ExploreScreen(
         LazyColumn(
             state = listState,
             modifier = Modifier.padding(
-                top = it.calculateTopPadding(),
-                bottom = MINI_PLAYER_HEIGHT + NAVBAR_HEIGHT)
+                top = it.calculateTopPadding())
         ){
             items(items = requestList){track ->
                 TrackColumnItem(
@@ -79,7 +78,7 @@ fun ExploreScreen(
                     modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING)
                 )
             }
-            item { Box(modifier = Modifier.height(MAIN_HORIZONTAL_PADDING)) }
+            item { Box(modifier = Modifier.height(MAIN_HORIZONTAL_PADDING + MINI_PLAYER_HEIGHT + NAVBAR_HEIGHT)) }
         }
     }
 }

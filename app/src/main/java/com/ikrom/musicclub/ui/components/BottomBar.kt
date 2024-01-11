@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,7 +47,8 @@ fun BottomBar(
     onPlayerClick: () -> Unit
 ){
     val showBottomBar = navBackStackEntry?.destination?.route != "player"
-    val showMiniBar = playerConnection.isPlaying.collectAsState()
+    val showMiniBar by playerConnection.currentTrack.collectAsState()
+
     val verticalOffset by animateFloatAsState(
         targetValue = if (showBottomBar) 0f else with(LocalDensity.current) {
             (NAVBAR_HEIGHT).toPx() + (MINI_PLAYER_HEIGHT).toPx()
@@ -55,7 +57,7 @@ fun BottomBar(
         label = ""
     )
     val miniBarVerticalOffset by animateFloatAsState(
-        targetValue = if (showMiniBar.value) 0f else with(LocalDensity.current) {
+        targetValue = if (showMiniBar != null) 0f else with(LocalDensity.current) {
             (MINI_PLAYER_HEIGHT).toPx()
         },
         animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),

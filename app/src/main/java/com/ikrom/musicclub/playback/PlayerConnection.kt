@@ -3,6 +3,7 @@ package com.ikrom.musicclub.playback
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
@@ -29,7 +30,10 @@ class PlayerConnection @Inject constructor(
     val repository: MusicServiceRepository
 ): Player.Listener {
     private var currentMediaItem = mutableStateOf(player.currentMediaItem)
-    var currentTrack: Track? = null
+
+    var _currentTrack = MutableStateFlow<Track?>(null)
+    var currentTrack = _currentTrack.asStateFlow()
+
     val playbackState = MutableStateFlow(player.playbackState)
     val isPlaying = MutableStateFlow(player.playWhenReady)
     var currentPosition = mutableLongStateOf(0L)
@@ -58,7 +62,7 @@ class PlayerConnection @Inject constructor(
 
     @UnstableApi
     fun addToFavorite(context: Context){
-        currentTrack?.let {
+        currentTrack.value?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val downloadRequest = DownloadRequest.Builder(it.videoId, it.videoId.toUri())
                     .setCustomCacheKey(it.videoId)
@@ -77,7 +81,7 @@ class PlayerConnection @Inject constructor(
 
     @UnstableApi
     fun deleteFromFavorite(context: Context){
-        currentTrack?.let {
+        currentTrack.value?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 DownloadService.sendRemoveDownload(
                     context,
@@ -95,7 +99,7 @@ class PlayerConnection @Inject constructor(
     }
 
     fun playNow(tracks: List<Track>){
-        currentTrack = tracks.first()
+        _currentTrack.value = tracks.first()
         if (player.currentMediaItem != tracks.first().toMediaItem()){
             player.clearMediaItems()
             player.setMediaItems(tracks.map { it.toMediaItem() })
@@ -134,7 +138,7 @@ class PlayerConnection @Inject constructor(
     fun isFavorite(): StateFlow<Boolean> {
         if (currentTrack != null) {
             CoroutineScope(Dispatchers.IO).launch {
-                _isFavorite.value = repository.isFavorite(currentTrack!!.videoId)
+                _isFavorite.value = repository.isFavorite(currentTrack.value!!.videoId)
             }
         }
         return _isFavorite.asStateFlow()
