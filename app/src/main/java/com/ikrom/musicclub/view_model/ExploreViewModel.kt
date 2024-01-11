@@ -3,6 +3,7 @@ package com.ikrom.musicclub.view_model
 import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ikrom.innertube.models.SearchSuggestions
 import com.ikrom.musicclub.data.model.SearchHistory
 import com.ikrom.musicclub.data.model.Track
 import com.ikrom.musicclub.data.repository.MusicServiceRepository
@@ -20,6 +21,9 @@ class ExploreViewModel @Inject constructor(private val repository: MusicServiceR
 
     private val _searchHistory = MutableStateFlow(emptyList<SearchHistory>())
     var searchHistory = _searchHistory.asStateFlow()
+
+    private val _searchSuggestions = MutableStateFlow(SearchSuggestions(emptyList(), emptyList()))
+    var searchSuggestions = _searchSuggestions.asStateFlow()
 
     var userInput = ""
 
@@ -44,6 +48,11 @@ class ExploreViewModel @Inject constructor(private val repository: MusicServiceR
         viewModelScope.launch {
             repository.getSearchHistoryList(query).collect {
                 _searchHistory.value = it
+            }
+        }
+        viewModelScope.launch {
+            repository.getSearchSuggestions(query).collect {
+                _searchSuggestions.value = it
             }
         }
     }

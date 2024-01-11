@@ -1,6 +1,8 @@
 package com.ikrom.musicclub.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,6 +33,7 @@ fun ExploreScreen(
     var userInput by remember { mutableStateOf( exploreViewModel.userInput) }
     val requestList by exploreViewModel.requestList.collectAsState()
     val searchHistory by exploreViewModel.searchHistory.collectAsState()
+    val suggestions by exploreViewModel.searchSuggestions.collectAsState()
 
     Scaffold(
         topBar = {
@@ -49,17 +52,17 @@ fun ExploreScreen(
                     exploreViewModel.deleteSearchHistory(it.query)
                 },
                 onItemClick = {
-                    userInput = it.query
+                    userInput = it
                 },
                 onClearClick = {
                     userInput = ""
                     exploreViewModel.search("")
-                }
+                },
+                searchSuggestions = suggestions
             )
         }
     ) {
         val listState = rememberLazyListState()
-
         LazyColumn(
             state = listState,
             modifier = Modifier.padding(
@@ -76,6 +79,7 @@ fun ExploreScreen(
                     modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING)
                 )
             }
+            item { Box(modifier = Modifier.height(MAIN_HORIZONTAL_PADDING)) }
         }
     }
 }

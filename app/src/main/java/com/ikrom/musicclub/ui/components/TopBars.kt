@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,8 @@ import com.ikrom.musicclub.R
 import com.ikrom.musicclub.data.model.SearchHistory
 import com.ikrom.musicclub.ui.theme.MAIN_HORIZONTAL_PADDING
 import androidx.compose.ui.platform.LocalDensity
+import androidx.room.util.query
+import com.ikrom.innertube.models.SearchSuggestions
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,9 +56,10 @@ fun ExploreBar(
     onQueryChange: (String) -> Unit,
     onSearchClick: (String) -> Unit,
     onButtonClick: (SearchHistory) -> Unit,
-    onItemClick: (SearchHistory) -> Unit,
+    onItemClick: (String) -> Unit,
     onClearClick: () -> Unit,
-    searchHistoryList: List<SearchHistory>
+    searchHistoryList: List<SearchHistory>,
+    searchSuggestions: SearchSuggestions
 ) {
     var isActive by remember { mutableStateOf(false) }
     val fieldPadding by remember { mutableStateOf(if (isActive) 0f else 15f) }
@@ -83,41 +87,52 @@ fun ExploreBar(
         },
         shape = MaterialTheme.shapes.large,
         leadingIcon = {
-            Icon(painter = painterResource(id = R.drawable.ic_search), contentDescription = null)
+            Icon(
+                painter = painterResource(id = R.drawable.ic_search),
+                contentDescription = null)
         },
         trailingIcon = {
             if (userInput.isNotEmpty()){
-                IconButton(onClick = {
+                IconButton(
+                    modifier = Modifier.size(18.dp),
+                    onClick = {
                     onClearClick()
                 }) {
-                    Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = null)
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize())
                 }
             }
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = fieldPaddingAnimatable.value.dp),
+            .padding(horizontal = fieldPaddingAnimatable.value.dp, vertical = 12.dp),
     ) {
         LazyColumn {
             items(items = searchHistoryList){
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 3.dp)
-                        .clickable {
-                            onItemClick(it)
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    HistoryText(
-                        it.query,
-                        onButtonClick = {
-                            onButtonClick(it)
-                        },
-                        modifier = Modifier.padding(horizontal = MAIN_HORIZONTAL_PADDING / 2 )
-                    )
-                }
-            }
 
+                SearchBarItem(
+                    text = it.query,
+                    leadingIconId = R.drawable.ic_history,
+                    trailingIconId = R.drawable.ic_close,
+                    onButtonClick = {
+                        onButtonClick(it)
+                    },
+                    modifier = Modifier
+                        .clickable { onItemClick(it.query) }
+                        .padding(vertical = 12.dp)
+                )
+            }
+            items(items = searchSuggestions.queries){
+                SearchBarItem(
+                    text = it,
+                    leadingIconId = R.drawable.ic_search,
+                    modifier = Modifier
+                        .clickable { onItemClick(it) }
+                        .padding(vertical = 12.dp)
+                )
+            }
         }
     }
 }

@@ -267,38 +267,48 @@ fun TrackColumnItem(
             }
         }
     }
+
 }
 
 @Composable
-fun HistoryText(
-    text: String = "",
-    modifier: Modifier = Modifier,
-    onButtonClick: () -> Unit
+fun SearchBarItem(
+    text: String,
+    leadingIconId: Int? = null,
+    trailingIconId: Int? = null,
+    onButtonClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ){
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_history),
-            contentDescription = null,
-        )
+        if (leadingIconId != null){
+            Box(modifier = Modifier.width(MAIN_HORIZONTAL_PADDING))
+            Icon(
+                painter = painterResource(id = leadingIconId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+            )
+        }
         Text(
             text = text,
+            fontSize = 16.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 16.dp)
         )
-        IconButton(
-            onClick = { onButtonClick() },
-        ) {
+        if (trailingIconId != null){
             Icon(
-                painter = painterResource(id = R.drawable.ic_close),
+                painter = painterResource(id = trailingIconId),
                 contentDescription = null,
+                modifier = Modifier
+                    .size(14.dp)
+                    .clickable { onButtonClick() }
             )
+            Box(modifier = Modifier.width(MAIN_HORIZONTAL_PADDING))
         }
     }
-
 }

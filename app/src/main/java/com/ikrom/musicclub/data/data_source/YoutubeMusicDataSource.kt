@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.ikrom.innertube.YouTube
+import com.ikrom.innertube.models.SearchSuggestions
 import com.ikrom.innertube.models.SongItem
 import com.ikrom.musicclub.data.model.Album
 import com.ikrom.musicclub.data.model.Track
@@ -50,6 +51,16 @@ class YoutubeMusicDataSource: IMusicServiceDataSource {
                 responseStateFlow.value = result.songs.map { it.toTrack() }
             }.onFailure {
                 Log.e(TAG, "get album ${albumId} tracks failure")
+            }
+        }
+        return responseStateFlow
+    }
+
+    override fun getSearchSuggestions(query: String): MutableStateFlow<SearchSuggestions> {
+        val responseStateFlow = MutableStateFlow(SearchSuggestions(emptyList(), emptyList()))
+        CoroutineScope(Dispatchers.IO).launch {
+            YouTube.searchSuggestions(query).onSuccess { result ->
+                responseStateFlow.value = result
             }
         }
         return responseStateFlow
