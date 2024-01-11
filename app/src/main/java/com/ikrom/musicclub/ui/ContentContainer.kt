@@ -1,5 +1,7 @@
 package com.ikrom.musicclub.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -28,7 +30,13 @@ fun ContentContainer(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "home")
+        startDestination = "home",
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        })
     {
         composable("home"){
             HomeScreen(
